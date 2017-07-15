@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta content="text/html; charset=UTF-8" />
+  <title>Datenbanken</title>
+  <style src="style.css">
+  </style>
+</head>
+    
+<body>
+   <div class="main">
+        <h1>Wählen Sie Ihren Personalstatus</h1>
+        <button type="button" onclick="myFunction()">Manager</button>
+        <button type="button" onclick="myFunction()">Fahrer</button>
+    </div>
+    <div class="manager">
+        <h1>Manager</h1>
+        <h2>1. Neuen Auftrag anlegen:</h2>
+        <input type="text" placeholder="Abholadresse">
+        <input type="text" placeholder="Zieladresse">
+        <button type="button" onclick="myFunction()">Auftrag speichern</button>
+        <h2>2. Fahrer eintragen:</h2>
+        <input type="text" placeholder="Nachname">
+        <input type="text" placeholder="Vorname">
+        <input type="text" placeholder="Standort (optional)">
+        <button type="button" onclick="myFunction()">Fahrer speichern</button>
+        <h2>3. Fahrer ändern:</h2>
+        <input type="text" placeholder="Personalnummer">
+        <h3>Daten ändern:</h3>
+        <input type="text" placeholder="Nachname">
+        <input type="text" placeholder="Vorname">
+        <button type="button" onclick="myFunction()">Fahrer ändern</button>
+    </div>
+    <div class="fahrer">
+        <h1>Fahrer</h1>
+        <table>
+            <caption>Auftrag</caption>
+            <tr>
+                <th>Auftragsnummer</th>
+                <th>Datum/Uhrzeit</th>
+                <th>Startadresse</th>
+                <th>Zieladresse</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td id="Auftragsnummer"></td>
+                <td id="Datum"></td>
+                <td id="Startadresse"></td>
+                <td id="Zieladresse"></td>
+                <td id="Status"></td>
+                <td><input id="checkbox" type="checkbox" name="Status"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+    
+</html>
