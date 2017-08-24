@@ -1,0 +1,25 @@
+{
+  "name": "db-project",
+  "version": "1.0.0",
+  "description": "Daten eines Kurierdienstes",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VanessaHahn/DB-Projekt.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VanessaHahn/DB-Projekt/issues"
+  },
+  "homepage": "https://github.com/VanessaHahn/DB-Projekt#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "ejs": "^2.5.7",
+    "express": "^4.15.4",
+    "node-couchdb": "^1.2.0"
+  }
+}
