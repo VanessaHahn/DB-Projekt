@@ -15,13 +15,19 @@ request = function (request) {
 var client = http.createClient(5984, "127.0.0.1");
 var request1 = client.request("PUT", "/auftraege");
 request(request1);
-var request2 = client.request("PUT", "/adressen");
+var request2 = client.request("PUT", "/fahrer");
 request(request2);
+var request3 = client.request("PUT", "/manager");
+request(request3);
+var request4 = client.request("PUT", "/adressen");
+request(request4);
 
 var couchdb = require('felix-couchdb');
 var dbClient = couchdb.createClient(5984, "127.0.0.1");
 var db1 = dbClient.db('auftraege');
-var db2 = dbClient.db('adressen');
+var db2 = dbClient.db('fahrer');
+var db3 = dbClient.db('manager');
+var db4 = dbClient.db('adressen');
 
 callback = function (err, doc) {
     if (err) {
@@ -81,7 +87,6 @@ var auftrag5 = {
 
 db1.saveDoc('e03afe3023345fcfe2cf10ada200f984', auftrag5, callback);
 
-
 var fahrer1 = {
     "pers-nr": 1,
     "vorname": "John",
@@ -92,3 +97,66 @@ var fahrer1 = {
 };
 
 db2.saveDoc('e03afe3023345fcfe2cf10ada2003b1a', fahrer1, callback);
+
+var fahrer2 = {
+    "pers-nr": 2,
+    "vorname": "Thomas",
+    "nachname": "Meier",
+    "passwort": "thomas-meier",
+    "standort": 1,
+    "auftrag": 0
+};
+
+db2.saveDoc('e03afe3023345fcfe2cf10ada2014e92', fahrer2, callback);
+
+var fahrer3 = {
+    "pers-nr": 3,
+    "vorname": "Johannes",
+    "nachname": "Bond",
+    "passwort": "johannes-bond",
+    "standort": 4,
+    "auftrag": 0
+};
+
+db2.saveDoc('e03afe3023345fcfe2cf10ada2017423', fahrer3, callback);
+
+var manager1 = {
+    "pers-nr": 1,
+    "vorname": "Hans",
+    "nachname": "Müller",
+    "passwort": "hans-mueller"
+};
+
+db3.saveDoc('e03afe3023345fcfe2cf10ada200824e', manager1, callback);
+
+var adresse1 = {
+    "adressen-nr": 1,
+    "avenue": 5,
+    "street": 31
+};
+
+db4.saveDoc('e03afe3023345fcfe2cf10ada20050e4', adresse1, callback);
+
+var adresse2 = {
+    "adressen-nr": 2,
+    "avenue": 2,
+    "street": 53
+};
+
+db4.saveDoc('e03afe3023345fcfe2cf10ada20065dc', adresse2, callback);
+
+var adresse3 = {
+    "adressen-nr": 3,
+    "avenue": 3,
+    "street": 44
+};
+
+db4.saveDoc('e03afe3023345fcfe2cf10ada2011533', adresse3, callback);
+
+var adresse4 = {
+    "adressen-nr": 4,
+    "avenue": 1,
+    "street": 9
+};
+
+db4.saveDoc('e03afe3023345fcfe2cf10ada201362d', adresse4, callback);
