@@ -1,6 +1,7 @@
-var http = require('http');
-
-request = function (request) {
+function createDb(relation) {
+    var http = require('http');
+    var client = http.createClient(5984, "127.0.0.1");
+    var request = client.request("PUT", "/" + relation);
     request.on("response", function (response) {
         response.on("end", function () {
             if (response.statusCode == 201) {
@@ -11,31 +12,25 @@ request = function (request) {
         });
     });
     request.end();
-}
-var client = http.createClient(5984, "127.0.0.1");
-var request1 = client.request("PUT", "/auftraege");
-request(request1);
-var request2 = client.request("PUT", "/fahrer");
-request(request2);
-var request3 = client.request("PUT", "/manager");
-request(request3);
-var request4 = client.request("PUT", "/adressen");
-request(request4);
+    var couchdb = require('felix-couchdb');
+    var dbClient = couchdb.createClient(5984, "127.0.0.1");
+    var db = dbClient.db(relation);
 
-var couchdb = require('felix-couchdb');
-var dbClient = couchdb.createClient(5984, "127.0.0.1");
-var db1 = dbClient.db('auftraege');
-var db2 = dbClient.db('fahrer');
-var db3 = dbClient.db('manager');
-var db4 = dbClient.db('adressen');
-
-callback = function (err, doc) {
-    if (err) {
-        console.log(JSON.stringify(err));
-    } else {
-        console.log('Saved doc');
+    callback = function (err, doc) {
+        if (err) {
+            console.log(JSON.stringify(err));
+        } else {
+            console.log('Saved doc');
+        }
     }
+
+    return db;
 }
+
+var db1 = createDb('auftraege');
+var db2 = createDb('fahrer');
+var db3 = createDb('manager');
+var db4 = createDb('adressen');
 
 var auftrag1 = {
     "auftragsNr": 1,
