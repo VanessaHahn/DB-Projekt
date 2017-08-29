@@ -16,14 +16,6 @@ function createDb(relation) {
     var dbClient = couchdb.createClient(5984, "127.0.0.1");
     var db = dbClient.db(relation);
 
-    callback = function (err, doc) {
-        if (err) {
-            console.log(JSON.stringify(err));
-        } else {
-            console.log('Saved doc');
-        }
-    }
-
     return db;
 }
 
@@ -32,6 +24,14 @@ var db2 = createDb('fahrer');
 var db3 = createDb('manager');
 var db4 = createDb('adressen');
 
+callback = function (err, doc) {
+    if (err) {
+        console.log(JSON.stringify(err));
+    } else {
+        console.log('Saved doc');
+    }
+}
+    
 var auftrag1 = {
     "auftragsNr": 1,
     "zeitstempel": "2017-08-23T13:07:00",
