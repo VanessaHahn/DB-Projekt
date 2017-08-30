@@ -9,19 +9,19 @@
 </head>
 
 <body>
-    <div class="main">
+    <div class="main centered">
         <h1>Wählen Sie Ihren Personalstatus</h1>
         <button type="button" onclick="App.viewLogin('manager')">Manager</button>
         <button type="button" onclick="App.viewLogin('fahrer')">Fahrer</button>
     </div>
 
-    <div class="login hidden">
-        <h1>Login:</h1>
+    <div class="login centered hidden">
+        <h1>Login</h1>
         <input class="inputName" type="text" placeholder="Personalnummer">
         <input class="inputKey" type="password" placeholder="Passwort">
         <button type="button" onClick="App.login()">Senden</button>
     </div>
-    <div class="manager hidden">
+    <div class="manager centered hidden">
         <h1>Manager</h1>
         <h2>1. Neuen Auftrag anlegen:</h2>
         <input type="text" placeholder="Abholadresse">
@@ -39,9 +39,9 @@
         <input type="text" placeholder="Vorname">
         <button type="button" onclick="myFunction()">Fahrer ändern</button>
     </div>
-    <div class="fahrer hidden">
+    <div class="fahrer centered hidden">
         <h1>Fahrer</h1>
-        <table>
+        <table class="centerTable">
             <caption>Auftrag</caption>
             <tr>
                 <th>Auftragsnummer</th>
