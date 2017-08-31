@@ -11,7 +11,7 @@ module.exports = (function () {
     connected = false;
 
   function init() {
-    url = "mongodb://" + "localhost" + ":" + "32774" + "/" + "dbProject"; //URL auf der Mongo läuft (Port austauschen)
+    url = "mongodb://" + "localhost" + ":" + "32776" + "/" + "dbProject"; //URL auf der Mongo läuft (Port austauschen)
 
     // Schemata werden in etwa wie ein Schema bei einer relationalen Datenbank verwendet
     var driverSchema = mongoose.Schema({
@@ -24,8 +24,8 @@ module.exports = (function () {
 
     var adressesSchema = mongoose.Schema({
       _id: {type: Number, required: true,},
-      lineOne: {type: String, required: true,},
-      lineTwo: {type: String, required: true,},
+      avenue: {type: String, required: true,},
+      street: {type: String, required: true,},
     });
 
     var managerSchema = mongoose.Schema({
@@ -43,9 +43,88 @@ module.exports = (function () {
     });
 
     drivers = mongoose.model("drivers", driverSchema);
+    addDriver({
+      "_id": 1,
+      "name": "John Smith",
+      "passwort": "john-smith",
+      "adressID": 2,
+      "assignmentID": 0,
+    });
+    addDriver({
+      "_id": 2,
+      "name": "Thomas Meier",
+      "passwort": "thomas-meier",
+      "adressID": 1,
+      "assignmentID": 1,
+    });
+    addDriver({
+      "_id": 3,
+      "name": "Johannes Bond",
+      "passwort": "johannes-bond",
+      "adressID": 4,
+      "assignmentID": 0,
+  });
     adresses = mongoose.model("adresses", adressesSchema);
+    addAdress({"_id": 1,
+      "avenue": 5,
+      "street": 31});
+    addAdress({
+      "_id": 2,
+      "avenue": 2,
+      "street": 53,
+    });
+    addAdress( {
+      "_id": 3,
+      "avenue": 3,
+      "street": 44
+    });
+    addAdress({
+      "_id": 4,
+      "avenue": 1,
+      "street": 9,
+    });
     managers = mongoose.model("managers", managerSchema);
+    addManager({
+      "_id": 1,
+      "name": "Hans Mueller",
+      "passwort": "hans-mueller",
+    });
     assignments = mongoose.model("assignments", assignmentSchema);
+    addAssignment({
+      "_id": 1,
+      "date": "2017-08-23T13:07:00",
+      "state": 0,
+      "startAdressID": 1,
+      "endAdressID": 2,
+    });
+    addAssignment({
+      "_id": 2,
+      "date": "2017-08-23T13:43:00",
+      "state": 0,
+      "startAdressID": 3,
+      "endAdressID": 2,
+    });
+    addAssignment({
+      "_id": 3,
+      "date": "2017-08-23T13:45:00",
+      "state": 0,
+      "startAdressID": 1,
+      "endAdressID": 3,
+    });
+    addAssignment({
+      "_id": 4,
+      "date": "2017-08-23T13:45:50",
+      "state": 0,
+      "startAdressID": 3,
+      "endAdressID": 1,
+    });
+    addAssignment({
+      "_id": 5,
+      "date": "2017-08-23T13:47:00",
+      "state": 2,
+      "startAdressID": 2,
+      "endAdressID": 4,
+    });
   }
 
   function connect() {
@@ -85,7 +164,6 @@ module.exports = (function () {
           reject(err);
         } else {
           resolve(manager);
-          console.log(manager);
         }
       });
     });
@@ -98,7 +176,6 @@ module.exports = (function () {
           reject(err);
         } else {
           resolve(assignment);
-          console.log(assignment);
         }
       });
     });
@@ -111,7 +188,6 @@ module.exports = (function () {
           reject(err);
         } else {
           resolve(adresses);
-          console.log(adresses);
         }
       });
     });
@@ -192,9 +268,8 @@ module.exports = (function () {
     });
   }
 
-  function addAssignement(assignement) {
+  function addAssignment(assignement) {
     return new Promise(function (resolve, reject) {
-      console.log(assignments);
       assignments.create(assignement, function (err, newAssignment) {
         if (err) {
           reject(err);
@@ -220,7 +295,7 @@ module.exports = (function () {
     });
   }
 
-  function addAddress(adress) {
+  function addAdress(adress) {
     return new Promise(function (resolve, reject) {
       adresses.create(adress, function (err, newAddress) {
         if (err) {
@@ -246,9 +321,9 @@ module.exports = (function () {
   that.getManagerByID = getManagerByID;
   that.getAssignmentByID = getAssignmentByID;
   that.addDriver = addDriver;
-  that.addAdress = addAddress;
+  that.addAdress = addAdress;
   that.addManager = addManager;
-  that.addAssignment = addAssignement;
+  that.addAssignment = addAssignment;
   that.markAssignment = markAssignment;
   that.updateDriver = updateDriver;
   that.isConnected = isConnected;

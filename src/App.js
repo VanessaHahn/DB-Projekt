@@ -11,19 +11,6 @@ App = (function () {
 
   function initLayout() {
 
-    express = require("express");
-    bodyparser = require("body-parser");
-    initDatabase();
-  }
-
-  function initDatabase() {
-    db = require("./DatabaseConnector");
-    db.init();
-    db.connect().then(function () {
-      console.log("Connections success");
-    }).catch(function (err) {
-      console.log("Error" + err);
-    });
   }
 
   function viewLogin(employeeStatus) {
@@ -37,15 +24,27 @@ App = (function () {
     var password = document.querySelector(".inputKey").value;
 
     if (employee === 'fahrer') {
-      let driver = db.getDriverByID(persNr);
-      console.log(driver);
-    }
+      httpGetAsync("http://localhost:8000/drivers"), function (callback) {
+        console.log(callback);
+      };
+     }
     viewTasks();
   }
 
   function viewTasks() {
     document.querySelector(".login").classList.add("hidden");
     document.querySelector("." + employee).classList.remove("hidden");
+  }
+
+  function httpGetAsync(theUrl, callback)
+  {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+        callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous
+    xmlHttp.send(null);
   }
 
   that.initLayout = initLayout;
