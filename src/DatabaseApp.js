@@ -86,7 +86,7 @@ app.get('/assignments/_id', function (req, res) {
   });
 });
 
-app.post("/assignments/_id", function (req, res) {
+app.put("/assignments/_id", function (req, res) {
   console.log("Connected: " + db.isConnected());
   console.log(req.query._state);
   var assignment = db.markAssignment(req.query._id, req.query._state).then(function (assignment) {

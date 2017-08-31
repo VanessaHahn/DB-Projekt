@@ -194,6 +194,7 @@ module.exports = (function () {
 
   function addAssignement(assignement) {
     return new Promise(function (resolve, reject) {
+      console.log(assignments);
       assignments.create(assignement, function (err, newAssignment) {
         if (err) {
           reject(err);
@@ -209,7 +210,7 @@ module.exports = (function () {
       state: assignmentState,
     };
     return new Promise(function (resolve, reject) {
-      drivers.findByIdAndUpdate(assignmentID, update, function (err, driverUpdate) {
+      assignments.findByIdAndUpdate(assignmentID, update, {new: true}, function (err, driverUpdate) {
         if(err){
           reject(err);
         }else {
