@@ -22,6 +22,7 @@ module.exports = (function () {
       name: {type: String, required: true,},
       passwort: {type: String, required: true,},
       adressID: {type: Number,},
+      assignmentID: {type: Number,},
     });
 
     var adressesSchema = mongoose.Schema({
@@ -183,6 +184,18 @@ module.exports = (function () {
     });
   }
 
+  function getAssignmentByID(assignmentID) {
+    return new Promise(function(resolve, reject) {
+      assignments.findById(assignmentID, function(err, driver) {
+        if(err) {
+          reject(err);
+        } else {
+          resolve(driver);
+        }
+      });
+    });
+  }
+
   function addAssignement(assignement) {
     return new Promise(function (resolve, reject) {
       assignments.create(assignement, function (err, newAssignment) {
@@ -234,6 +247,7 @@ module.exports = (function () {
   that.getAllAdresses = getAllAdresses;
   that.getDriverByID = getDriverByID;
   that.getManagerByID = getManagerByID;
+  that.getAssignmentByID = getAssignmentByID;
   that.addDriver = addDriver;
   that.addAdress = addAddress;
   that.addManager = addManager;
