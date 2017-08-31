@@ -6,11 +6,24 @@ App = (function () {
   var that = {},
     employee,
     express,
-    nano;
+    bodyparser,
+    db;
 
   function initLayout() {
-    nano = require('nano')('http://localhost:5984');
+
     express = require("express");
+    bodyparser = require("body-parser");
+    initDatabase();
+  }
+
+  function initDatabase() {
+    db = require("./DatabaseConnector");
+    db.init();
+    db.connect().then(function () {
+      console.log("Connections success");
+    }).catch(function (err) {
+      console.log("Error" + err);
+    });
   }
 
   function viewLogin(employeeStatus) {
@@ -24,9 +37,8 @@ App = (function () {
     var password = document.querySelector(".inputKey").value;
 
     if (employee === 'fahrer') {
-      var fahrer = nano.use("fahrer");
-      var documents = fahrer.list();
-      console.log(documents);
+      let driver = db.getDriverByID(persNr);
+      console.log(driver);
     }
     viewTasks();
   }
