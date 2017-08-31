@@ -105,6 +105,58 @@ App = (function () {
         xmlHttp.send(null);
     }
 
+    function insertDriver() {
+        var vorname = document.querySelector(".inputFirstName").value;
+        var nachname = document.querySelector(".inputLastName").value;
+        //var standort = document.querySelector(".inputName").value;
+        var driverName = vorname + " " + nachname;
+        var url = "http://localhost:8000/drivers";
+
+        var data = {};
+        data.name = driverName;
+        var json = JSON.stringify(data);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.onload = function () {
+            var users = JSON.parse(xhr.responseText);
+            if (xhr.readyState == 4 && xhr.status == "201") {
+                console.table(users);
+            } else {
+                console.error(users);
+            }
+        }
+        xhr.send(json);
+    }
+
+    function updateDrivers() {
+        var url = "http://localhost:8000/drivers";
+        var persNr = document.querySelector(".inputName").value;
+        var vorname = document.querySelector(".inputFirstName").value;
+        var nachname = document.querySelector(".inputLastName").value;
+        var driverName = vorname + " " + nachname;
+        var checkID = filterDriver(persNr);
+        if (checkID != null) {
+            var data = {};
+            data.name = driverName;
+            var json = JSON.stringify(data);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("PUT", url + '/' + persNr, true);
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.onload = function () {
+                var users = JSON.parse(xhr.responseText);
+                if (xhr.readyState == 4 && xhr.status == "200") {
+                    console.table(users);
+                } else {
+                    console.error(users);
+                }
+            }
+            xhr.send(json);
+        }
+    }
+
     function selectNextAssignment() {
         var minDistance = 1000000;
         var minAssignment;
@@ -139,5 +191,7 @@ App = (function () {
     that.initLayout = initLayout;
     that.viewLogin = viewLogin;
     that.login = login;
+    that.updateDrivers = updateDrivers;
+    that.insertDriver = insertDriver;
     return that;
 }());
