@@ -1,147 +1,187 @@
-var nano = require('nano')('http://localhost:5984');
+var mongoose = require("mongoose"),
+  drivers,
+  adresses,
+  managers,
+  assignments;
 
-nano.db.create('auftraege', function () {
-    var auftraege = nano.use('auftraege');
+module.exports = (function () {
+  var that = {},
+    db = mongoose.connection,
+    url,
+    connected = false;
 
-    var auftrag1 = {
-        "auftragsNr": 1,
-        "zeitstempel": "2017-08-23T13:07:00",
-        "bearbeitungsStatus": 0,
-        "startadresse": 1,
-        "zieladresse": 2
-    };
+  init();
+  connect();
 
-    var auftrag2 = {
-        "auftragsNr": 2,
-        "zeitstempel": "2017-08-23T13:43:00",
-        "bearbeitungsStatus": 0,
-        "startadresse": 3,
-        "zieladresse": 2
-    };
+  function init() {
+    url = "mongodb://" + "localhost" + ":" + "32773" + "/" + "dbProject"; //URL auf der Mongo läuft (Port austauschen)
 
-    var auftrag3 = {
-        "auftragsNr": 3,
-        "zeitstempel": "2017-08-23T13:45:00",
-        "bearbeitungsStatus": 0,
-        "startadresse": 1,
-        "zieladresse": 3
-    };
+    // Schemata werden in etwa wie ein Schema bei einer relationalen Datenbank verwendet
+    var driverSchema = mongoose.Schema({
+      id: {type: Number, required: true,},
+      name: {type: String, required: true,},
+      passwort: {type: String, required: true,},
+      adressID: {type: Number,},
+    });
 
-    var auftrag4 = {
-        "auftragsNr": 4,
-        "zeitstempel": "2017-08-23T13:45:50",
-        "bearbeitungsStatus": 0,
-        "startadresse": 3,
-        "zieladresse": 1
-    };
+    var adressesSchema = mongoose.Schema({
+      id: {type: Number, required: true,},
+      lineOne: {type: String, required: true,},
+      lineTwo: {type: String, required: true,},
+    });
 
-    var auftrag5 = {
-        "auftragsNr": 5,
-        "zeitstempel": "2017-08-23T13:47:00",
-        "bearbeitungsStatus": 1,
-        "startadresse": 2,
-        "zieladresse": 4
-    };
+    var managerSchema = mongoose.Schema({
+      id: {type: Number, required: true,},
+      name: {type: String, required: true,},
+      passwort: {type: String, required: true,},
+    });
 
-    auftraege.insert(auftrag1, "000");
-    auftraege.insert(auftrag2, "001");
-    auftraege.insert(auftrag3, "002");
-    auftraege.insert(auftrag4, "003");
-    auftraege.insert(auftrag5, "004");
-});
+    var assignmentSchema = mongoose.Schema({
+      id: {type: Number, required: true,},
+      date: {type: Date, required: true,},
+      state: {type: Number, required: true},
+      startAdressID: {type: Number, required: true},
+      endAdressID: {type: Number, required: true},
+    });
 
-nano.db.create('adressen', function () {
-    var adressen = nano.use('adressen');
+    drivers = mongoose.model("drivers", driverSchema);
+    adresses = mongoose.model("adresses", adressesSchema);
+    managers = mongoose.model("managers", managerSchema);
+    assignments = mongoose.model("assignments", assignmentSchema);
+  }
 
-    var adresse1 = {
-        "adressen-nr": 1,
-        "avenue": 5,
-        "street": 31
-    };
+  function connect() {
+    return new Promise(function (resolve, reject) {
+      mongoose.connect(url);
+      db.on("error", function (err) {
+        reject();
+      });
 
-    var adresse2 = {
-        "adressen-nr": 2,
-        "avenue": 2,
-        "street": 53
-    };
+      db.on("disconnect", function () {
+        connected = false;
+      });
 
-    var adresse3 = {
-        "adressen-nr": 3,
-        "avenue": 3,
-        "street": 44
-    };
+      db.once("open", function () {
+        connected = true;
+        resolve();
+      });
+    });
+  }
 
-    var adresse4 = {
-        "adressen-nr": 4,
-        "avenue": 1,
-        "street": 9
-    };
+  function getAllDrivers() {
+    return new Promise(function (resolve, reject) {
+      drivers.find({}, function (err, driver) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(driver);
+          console.log(driver);
+        }
+      });
+    });
+  }
 
-    adressen.insert(adresse1, "000");
-    adressen.insert(adresse2, "001");
-    adressen.insert(adresse3, "002");
-    adressen.insert(adresse4, "003");
-});
+  function getAllManagers() {
+    return new Promise(function (resolve, reject) {
+      managers.find({}, function (err, manager) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(manager);
+          console.log(manager);
+        }
+      });
+    });
+  }
 
-nano.db.create('fahrer', function () {
-    var fahrer = nano.use('fahrer');
+  function getAllAssignments() {
+    return new Promise(function (resolve, reject) {
+      assignments.find({}, function (err, assignment) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(assignment);
+          console.log(assignment);
+        }
+      });
+    });
+  }
 
-    var fahrer1 = {
-        "pers-nr": 1,
-        "vorname": "John",
-        "nachname": "Smith",
-        "passwort": "john-smith",
-        "standort": 2,
-        "auftrag": 0
-    };
+  function getAllAdresses() {
+    return new Promise(function (resolve, reject) {
+      adresses.find({}, function (err, adresses) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(adresses);
+          console.log(adresses);
+        }
+      });
+    });
+  }
 
-    var fahrer2 = {
-        "pers-nr": 2,
-        "vorname": "Thomas",
-        "nachname": "Meier",
-        "passwort": "thomas-meier",
-        "standort": 1,
-        "auftrag": 0
-    };
+  function addDriver(driver) {
+    return new Promise(function (resolve, reject) {
+      drivers.create(driver, function (err, newDriver) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(newDriver);
+        }
+      });
+    });
+  }
 
-    var fahrer3 = {
-        "pers-nr": 3,
-        "vorname": "Johannes",
-        "nachname": "Bond",
-        "passwort": "johannes-bond",
-        "standort": 4,
-        "auftrag": 0
-    };
+  function addManager(manager) {
+    return new Promise(function (resolve, reject) {
+      managers.create(manager, function (err, newManager) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(newManager);
+        }
+      });
+    });
+  }
 
-    fahrer.insert(fahrer1, "000");
-    fahrer.insert(fahrer2, "001");
-    fahrer.insert(fahrer3, "002");
-});
+  function addAssignement(assignement) {
+    return new Promise(function (resolve, reject) {
+      assignments.create(assignement, function (err, newAssignment) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(newAssignment);
+        }
+      });
+    });
+  }
 
-nano.db.create('manager', function () {
-    var manager = nano.use('manager');
+  function addAddress(adress) {
+    return new Promise(function (resolve, reject) {
+      adresses.create(adress, function (err, newAddress) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(newAddress);
+        }
+      });
+    });
+  }
 
-    var manager1 = {
-        "pers-nr": 1,
-        "vorname": "Hans",
-        "nachname": "Müller",
-        "passwort": "hans-mueller"
-    };
+  function isConnected() {
+    return connected;
+  }
 
-    manager.insert(manager1, "000");
-});
-
-var express = require('express');
-var app = express();
-app.use(function (req, res, next) {
-    console.log(req.url);
-    next();
-});
-app.use('/', express.static(__dirname));
-app.get('/index', function (req, res) {
-    res.sendfile(__dirname + '/index.html');
-});
-app.get('/*', function (req, res) {
-    res.status(404).sendfile(__dirname + '/error.html');
-});
-app.listen(64163);
+  that.init = init;
+  that.connect = connect;
+  that.getAllDrivers = getAllDrivers;
+  that.getAllMangers = getAllManagers;
+  that.getAllAssignments = getAllAssignments;
+  that.getAllAdresses = getAllAdresses;
+  that.addDriver = addDriver;
+  that.addAdress = addAddress;
+  that.addManager = addManager;
+  that.addAssignment = addAssignement;
+  that.isConnected = isConnected;
+  return that;
+})();
