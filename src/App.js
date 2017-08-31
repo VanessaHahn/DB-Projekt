@@ -57,6 +57,7 @@ App = (function () {
     checkbox.addEventListener( 'change', function() {
       if(this.checked) {
         var request = new XMLHttpRequest();
+        request.open("PUT", "http://localhost:8000/assignments/_id?id=" + currentAssignment._id + "&state=" + 2, true);
         request.send(null);
       }
     });
