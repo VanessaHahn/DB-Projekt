@@ -18,26 +18,26 @@ module.exports = (function () {
 
     // Schemata werden in etwa wie ein Schema bei einer relationalen Datenbank verwendet
     var driverSchema = mongoose.Schema({
-      id: {type: Number, required: true,},
+      _id: {type: Number, required: true,},
       name: {type: String, required: true,},
       passwort: {type: String, required: true,},
       adressID: {type: Number,},
     });
 
     var adressesSchema = mongoose.Schema({
-      id: {type: Number, required: true,},
+      _id: {type: Number, required: true,},
       lineOne: {type: String, required: true,},
       lineTwo: {type: String, required: true,},
     });
 
     var managerSchema = mongoose.Schema({
-      id: {type: Number, required: true,},
+      _id: {type: Number, required: true,},
       name: {type: String, required: true,},
       passwort: {type: String, required: true,},
     });
 
     var assignmentSchema = mongoose.Schema({
-      id: {type: Number, required: true,},
+      _id: {type: Number, required: true,},
       date: {type: Date, required: true,},
       state: {type: Number, required: true},
       startAdressID: {type: Number, required: true},
@@ -131,6 +131,22 @@ module.exports = (function () {
       });
     });
   }
+  
+
+  function updateDriver(driverID, driverName) {
+    var update = {
+      name: driverName,
+    };
+    return new Promise(function (resolve, reject) {
+      drivers.findByIdAndUpdate(driverID, update, function (err, driverUpdate) {
+        if(err){
+          reject(err);
+        }else {
+          resolve(driverUpdate);
+        }
+      });
+    });
+  }
 
   function addManager(manager) {
     return new Promise(function (resolve, reject) {
@@ -182,6 +198,7 @@ module.exports = (function () {
   that.addAdress = addAddress;
   that.addManager = addManager;
   that.addAssignment = addAssignement;
+  that.updateDriver = updateDriver;
   that.isConnected = isConnected;
   return that;
 })();
