@@ -4,10 +4,7 @@ App = (function () {
   "use strict";
 
   var that = {},
-    employee,
-    express,
-    bodyparser,
-    db;
+    employee;
 
   function initLayout() {
 
@@ -24,27 +21,17 @@ App = (function () {
     var password = document.querySelector(".inputKey").value;
 
     if (employee === 'fahrer') {
-      httpGetAsync("http://localhost:8000/drivers"), function (callback) {
-        console.log(callback);
-      };
-     }
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "//localhost:8000/drivers", false);
+      xhr.send(null);
+      console.log(xhr.responseText);
+    }
     viewTasks();
   }
 
   function viewTasks() {
     document.querySelector(".login").classList.add("hidden");
     document.querySelector("." + employee).classList.remove("hidden");
-  }
-
-  function httpGetAsync(theUrl, callback)
-  {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-        callback(xmlHttp.responseText);
-    }
-    xmlHttp.open("GET", theUrl, true); // true for asynchronous
-    xmlHttp.send(null);
   }
 
   that.initLayout = initLayout;

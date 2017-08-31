@@ -4,8 +4,14 @@ var db = require('./DatabaseConnector');
 
 var app = express();
 app.use(bodyParser.json());
+//enable cors
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
-app.get('/drivers', function (req, res) {
+app.get('/drivers', function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   let drivers = db.getAllDrivers().then(function (allDrivers) {
     res.json(allDrivers);
@@ -14,7 +20,7 @@ app.get('/drivers', function (req, res) {
   });
   });
 
-app.get('/managers', function (req, res) {
+app.get('/managers', function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   let managers = db.getAllMangers().then(function (allManagers) {
     res.json(allManagers);
@@ -23,7 +29,7 @@ app.get('/managers', function (req, res) {
   });
 });
 
-app.get('/adresses', function (req, res) {
+app.get('/adresses', function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   let adresses = db.getAllAdresses().then(function (allAdresses) {
     res.json(allAdresses);
@@ -32,7 +38,7 @@ app.get('/adresses', function (req, res) {
   });
 });
 
-app.get('/assignments', function (req, res) {
+app.get('/assignments', function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   let assignments = db.getAllAssignments().then(function (allAssignments) {
     res.json(allAssignments);
@@ -43,7 +49,7 @@ app.get('/assignments', function (req, res) {
 
 
 //Call this with /drivers/_id?_id=ID
-app.get('/drivers/_id', function (req, res) {
+app.get('/drivers/_id', function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   var driver = db.getDriverByID(req.query._id).then(function (driver) {
     if (driver === null) { //Falls kein Fahrer mit passender ID gefunden wird, wird 404 zurückgegeben
@@ -58,7 +64,7 @@ app.get('/drivers/_id', function (req, res) {
 });
 
 
-app.get('/managers/_id', function (req, res) {
+app.get('/managers/_id', function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   var manager = db.getManagerByID(req.query._id).then(function (manager) {
     if (manager === null) { //Falls kein Manager mit passender ID gefunden wird, wird 404 zurückgegeben
@@ -72,7 +78,7 @@ app.get('/managers/_id', function (req, res) {
   });
 });
 
-app.get('/assignments/_id', function (req, res) {
+app.get('/assignments/_id', function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   var assignment = db.getAssignmentByID(req.query._id).then(function (manager) {
     if (manager === null) { //Falls kein Manager mit passender ID gefunden wird, wird 404 zurückgegeben
@@ -86,7 +92,7 @@ app.get('/assignments/_id', function (req, res) {
   });
 });
 
-app.put("/assignments/_id", function (req, res) {
+app.put("/assignments/_id", function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   console.log(req.query._state);
   var assignment = db.markAssignment(req.query._id, req.query._state).then(function (assignment) {
@@ -102,7 +108,7 @@ app.put("/assignments/_id", function (req, res) {
 });
 
 //Send a Json (as body) to add a new driver
-app.post("/drivers/add", function (req, res) {
+app.post("/drivers/add", function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   var driver = req.body;
   db.addDriver(driver).then(function (drivers) {
@@ -113,7 +119,7 @@ app.post("/drivers/add", function (req, res) {
   })
 });
 
-app.post("/managers/add", function (req, res) {
+app.post("/managers/add", function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   var manager = req.body;
   db.addManager(manager).then(function (managers) {
@@ -124,7 +130,7 @@ app.post("/managers/add", function (req, res) {
   })
 });
 
-app.post("/adresses/add", function (req, res) {
+app.post("/adresses/add", function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   var adress = req.body;
   db.addAdress(adress).then(function (addresses) {
@@ -135,7 +141,7 @@ app.post("/adresses/add", function (req, res) {
   })
 });
 
-app.post("/assignments/add", function (req, res) {
+app.post("/assignments/add", function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   var assignment = req.body;
   db.addAssignment(assignment).then(function (assignments) {
