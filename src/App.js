@@ -1,12 +1,14 @@
+var $ = $ || {};
 var App = App || {};
 App = (function () {
     "use strict";
 
     var that = {},
-        employee;
+        employee,
+        nano;
 
     function initLayout() {
-
+        nano = require('nano')('http://localhost:5984');
     }
 
     function viewLogin(employeeStatus) {
@@ -16,8 +18,14 @@ App = (function () {
     }
 
     function login() {
-        //DB abfrage in manager bzw fahrer
-        //wenn erfolgreich:
+        var persNr = document.querySelector(".inputName").value;
+        var password = document.querySelector(".inputKey").value;
+
+        if (employee === 'fahrer') {
+            var fahrer = nano.use("fahrer");
+            var documents = fahrer.list();
+            console.log(documents);
+        }
         viewTasks();
     }
 
