@@ -39,9 +39,9 @@ module.exports = (function () {
     var assignmentSchema = mongoose.Schema({
       _id: {type: Number, required: true,},
       date: {type: Date, required: true,},
-      state: {type: Number, required: true},
-      startAdressID: {type: Number, required: true},
-      endAdressID: {type: Number, required: true},
+      state: {type: Number, required: true,},
+      startAdressID: {type: Number, required: true,},
+      endAdressID: {type: Number, required: true,},
     });
 
     drivers = mongoose.model("drivers", driverSchema);
@@ -131,7 +131,6 @@ module.exports = (function () {
       });
     });
   }
-  
 
   function updateDriver(driverID, driverName) {
     var update = {
@@ -160,6 +159,30 @@ module.exports = (function () {
     });
   }
 
+  function getManagerByID(managerID) {
+    return new Promise(function(resolve, reject) {
+      managers.findById(managerID, function(err, manager) {
+        if(err) {
+          reject(err);
+        } else {
+          resolve(manager);
+        }
+      });
+    });
+  }
+
+  function getDriverByID(driverID) {
+    return new Promise(function(resolve, reject) {
+      drivers.findById(driverID, function(err, driver) {
+        if(err) {
+          reject(err);
+        } else {
+          resolve(driver);
+        }
+      });
+    });
+  }
+
   function addAssignement(assignement) {
     return new Promise(function (resolve, reject) {
       assignments.create(assignement, function (err, newAssignment) {
@@ -167,6 +190,21 @@ module.exports = (function () {
           reject(err);
         } else {
           resolve(newAssignment);
+        }
+      });
+    });
+  }
+
+  function markAssignment(assignmentID, assignmentState) {
+    var update = {
+      state: assignmentState,
+    };
+    return new Promise(function (resolve, reject) {
+      drivers.findByIdAndUpdate(assignmentState, update, function (err, driverUpdate) {
+        if(err){
+          reject(err);
+        }else {
+          resolve(driverUpdate);
         }
       });
     });
@@ -194,10 +232,13 @@ module.exports = (function () {
   that.getAllMangers = getAllManagers;
   that.getAllAssignments = getAllAssignments;
   that.getAllAdresses = getAllAdresses;
+  that.getDriverByID = getDriverByID;
+  that.getManagerByID = getManagerByID;
   that.addDriver = addDriver;
   that.addAdress = addAddress;
   that.addManager = addManager;
   that.addAssignment = addAssignement;
+  that.markAssignment = markAssignment;
   that.updateDriver = updateDriver;
   that.isConnected = isConnected;
   return that;
