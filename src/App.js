@@ -5,7 +5,7 @@ App = (function () {
 
   var that = {},
     employee,
-    driversJson;
+    drivers;
 
   function initLayout() {
 
@@ -34,7 +34,9 @@ App = (function () {
 
   function getDrivers() {
     var drivers = httpGetAsync("http://localhost:8000/drivers", function (callback) {
-      driversJson = callback;
+      let driversJson = callback;
+      drivers = JSON.parse(driversJson);
+      console.log(drivers);
     });
   }
 
