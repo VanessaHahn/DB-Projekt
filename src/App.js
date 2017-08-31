@@ -95,8 +95,6 @@ App = (function () {
     });
   }
 
-
-
   function httpGetAsync(theUrl, callback)
   {
     var xmlHttp = new XMLHttpRequest();
@@ -107,6 +105,39 @@ App = (function () {
     xmlHttp.open("GET", theUrl, true); // true for asynchronous
     xmlHttp.send(null);
   }
+  
+      function selectNextAssignment() {
+        var minDistance = 1000000;
+        var minAssignment;
+        var assignments = getAssignments();
+
+        var drivers = getDrivers();
+        for (let i = 0; i < assignments.length; i++) {
+            for (let j = 0; j < addresses.length; j++) {
+                var distance = getDistance(drivers[j].adressID, assignments[i].startAdressID);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    minAssignment = assignments[i];
+                }
+            }
+        }
+    }
+
+    function getDistance(start, target) {
+        var addresses = getAddresses();
+        var startAddress,
+            targetAddress;
+        for (let i = 0; i < addresses.length; i++) {
+            if (addresses[i]._id === start) {
+                startAddress = addresses[i];
+            }
+            if (addresses[i]._id === target) {
+                targetAddress = addresses[i];
+            }
+        }
+        var distance = targetAddress.avenue - startAddress.avenue + targetAddress.street - startAddress.street;
+        return distance;
+    }
 
   that.initLayout = initLayout;
   that.viewLogin = viewLogin;
