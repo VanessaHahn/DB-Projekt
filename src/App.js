@@ -8,7 +8,8 @@ App = (function () {
     drivers,
     managers,
     adresses,
-    assignments;
+    assignments,
+    currentAssignment;
 
   function initLayout(){
     getDrivers();
@@ -30,7 +31,17 @@ App = (function () {
     if (employee === 'fahrer') {
       let driver = filterDriver(parseInt(persNr));
       if(driver.passwort === password){
+        currentAssignment = filterAssignement(driver.assignmentID);
+        console.log(currentAssignment);
+        if(currentAssignment !== undefined) {
+          document.getElementById("Auftragsnummer").innerHTML = currentAssignment._id;
+          document.getElementById("Datum").innerHTML = currentAssignment.date;
+          document.getElementById("Startadresse").innerHTML = currentAssignment.startAdressID;
+          document.getElementById("Zieladresse").innerHTML = currentAssignment.endAdressID;
+          document.getElementById("Status").innerHTML = currentAssignment.state;
+        }
         viewTasks();
+        checkBox();
       }
     }else {
       let manager = filterManager(parseInt(persNr));
@@ -40,10 +51,20 @@ App = (function () {
     }
   }
 
+  function checkBox() {
+    var checkbox = document.querySelector("input[name=Status]");
+
+    checkbox.addEventListener( 'change', function() {
+      if(this.checked) {
+        var request = new XMLHttpRequest();
+        request.send(null);
+      }
+    });
+  }
+
   function filterDriver(driverID) {
     let filteredDriver;
     for(let i = 0; i < drivers.length; i++){
-      console.log(drivers[i]._id === driverID);
       if(drivers[i]._id === driverID){
         filteredDriver = drivers[i];
       }
@@ -54,12 +75,21 @@ App = (function () {
   function filterManager(driverID) {
     let filteredDriver;
     for(let i = 0; i < managers.length; i++){
-      console.log(drivers[i]._id === driverID);
       if(managers[i]._id === driverID){
         filteredDriver = managers[i];
       }
     }
     return filteredDriver;
+  }
+
+  function filterAssignement(assignmentID) {
+    let filteredAssign;
+    for(let i = 0; i < drivers.length; i++){
+      if(assignments[i]._id === assignmentID){
+        filteredAssign = assignments[i];
+      }
+    }
+    return filteredAssign;
   }
 
   function viewTasks() {

@@ -8,6 +8,7 @@ app.use(bodyParser.json());
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   next();
 });
 
@@ -94,8 +95,7 @@ app.get('/assignments/_id', function (req, res, next) {
 
 app.put("/assignments/_id", function (req, res, next) {
   console.log("Connected: " + db.isConnected());
-  console.log(req.query._state);
-  var assignment = db.markAssignment(req.query._id, req.query._state).then(function (assignment) {
+  var assignment = db.markAssignment(req.query._id, req.query.state).then(function (assignment) {
     if (assignment === null) {
       res.sendStatus(404);
     } else {
