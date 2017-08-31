@@ -5,10 +5,16 @@ App = (function () {
 
   var that = {},
     employee,
-    drivers;
+    drivers,
+    managers,
+    adresses,
+    assignments;
 
-  function initLayout() {
-
+  function initLayout(){
+    getDrivers();
+    getManagers();
+    getAdresses();
+    getAssignments();
   }
 
   function viewLogin(employeeStatus) {
@@ -22,9 +28,38 @@ App = (function () {
     var password = document.querySelector(".inputKey").value;
 
     if (employee === 'fahrer') {
-    getDrivers();
+      let driver = filterDriver(parseInt(persNr));
+      if(driver.passwort === password){
+        viewTasks();
+      }
+    }else {
+      let manager = filterManager(parseInt(persNr));
+      if(manager.passwort === password){
+        viewTasks();
+      }
     }
-    viewTasks();
+  }
+
+  function filterDriver(driverID) {
+    let filteredDriver;
+    for(let i = 0; i < drivers.length; i++){
+      console.log(drivers[i]._id === driverID);
+      if(drivers[i]._id === driverID){
+        filteredDriver = drivers[i];
+      }
+    }
+    return filteredDriver;
+  }
+
+  function filterManager(driverID) {
+    let filteredDriver;
+    for(let i = 0; i < managers.length; i++){
+      console.log(drivers[i]._id === driverID);
+      if(managers[i]._id === driverID){
+        filteredDriver = managers[i];
+      }
+    }
+    return filteredDriver;
   }
 
   function viewTasks() {
@@ -33,12 +68,34 @@ App = (function () {
   }
 
   function getDrivers() {
-    var drivers = httpGetAsync("http://localhost:8000/drivers", function (callback) {
+    var driver = httpGetAsync("http://localhost:8000/drivers", function (callback) {
       let driversJson = callback;
       drivers = JSON.parse(driversJson);
-      console.log(drivers);
     });
   }
+
+  function getManagers() {
+    var manager = httpGetAsync("http://localhost:8000/managers", function (callback) {
+      let managersJson = callback;
+      managers = JSON.parse(managersJson);
+    });
+  }
+
+  function getAdresses() {
+    var adress = httpGetAsync("http://localhost:8000/adresses", function (callback) {
+      let adressesJson = callback;
+      adresses = JSON.parse(adressesJson);
+    });
+  }
+
+  function getAssignments() {
+    var assignment = httpGetAsync("http://localhost:8000/assignments", function (callback) {
+      let assignmentsJson = callback;
+      assignments = JSON.parse(assignmentsJson);
+    });
+  }
+
+
 
   function httpGetAsync(theUrl, callback)
   {
