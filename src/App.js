@@ -165,7 +165,7 @@ App = (function () {
         if (employee === 'fahrer') {
             let driver = filterDriver(parseInt(persNr));
             if (driver.passwort === password) {
-                viewTasks();
+                viewTasks(driver);
             }
         } else {
             let manager = filterManager(parseInt(persNr));
@@ -197,9 +197,65 @@ App = (function () {
         return filteredDriver;
     }
 
-    function viewTasks() {
+    function viewTasks(driver = null) {
         document.querySelector(".login").classList.add("hidden");
         document.querySelector("." + employee).classList.remove("hidden");
+        if (employee === 'fahrer') {
+            viewAssignment(driver);
+        }
+    }
+
+    function viewAssignment(driver) {
+        var assignment = null;
+        for (let i = 0; i < assignments.length; i++) {
+            if (driver.assignmentID === assignments[i]._id) {
+                assignment = assignments[i];
+            }
+        }
+        if (assignment == null) {
+            assignment = selectNextAssignment();
+            updateAssignmentID(driver, assignment._id);
+            updateState();
+        }
+        var startAdress,
+            targetAdress;
+        for (let i = 0; i < adresses.length; i++) {
+            if (adresses[i]._id == assignment.startAdressID) {
+                startAdress = adresses[i];
+            }
+            if (adresses[i]._id == assignment.endAdressID) {
+                targetAdress = adresses[i];
+            }
+        }
+        document.querySelector("#Auftragsnummer").innerHTML = assignment._id;
+        document.querySelector("#Datum").innerHTML = assignment.date;
+        document.querySelector("#Startadresse").innerHTML = startAdress.avenue + ". Avenue" + "/" + startAdress.street + ". Street";
+        document.querySelector("#Zieladresse").innerHTML = targetAdress.avenue + ". Avenue" + "/" + targetAdress.street + ". Street";
+        document.querySelector("#Status").innerHTML = assignment.state;
+    }
+
+    function updateAssignmentID(driver, assignmentID) {
+        var url = "http://localhost:8000/drivers";
+        var json = JSON.stringify({
+            assignmentID: assignmentID
+        });
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("PUT", url + '/_id?_id=' + driver._id, true);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.onload = function () {
+            var users = JSON.parse(xhr.responseText);
+            if (xhr.readyState == 4 && xhr.status == "200") {
+                console.table(users);
+            } else {
+                console.error(users);
+            }
+        }
+        xhr.send(json);
+    }
+
+    function updateState() {
+
     }
 
     function getDrivers() {
@@ -268,7 +324,7 @@ App = (function () {
 
     function updateDrivers() {
         var url = "http://localhost:8000/drivers";
-        var persNr = document.querySelector(".inputName").value;
+        var persNr = document.querySelector(".inputNumber").value;
         var vorname = document.querySelector(".inputFirstName").value;
         var nachname = document.querySelector(".inputLastName").value;
         var driverName = vorname + " " + nachname;
@@ -298,9 +354,9 @@ App = (function () {
         var minAssignment;
 
         for (let i = 0; i < assignments.length; i++) {
-            for (let j = 0; j < addresses.length; j++) {
+            for (let j = 0; j < drivers.length; j++) {
                 var distance = getDistance(drivers[j].adressID, assignments[i].startAdressID);
-                if (distance < minDistance) {
+                if (distance < minDistance && assignments[i].state === 0) {
                     minDistance = distance;
                     minAssignment = assignments[i];
                 }
@@ -327,6 +383,7 @@ App = (function () {
     that.initLayout = initLayout;
     that.viewLogin = viewLogin;
     that.login = login;
+    that.updateState = updateState;
     that.updateDrivers = updateDrivers;
     that.insertDriver = insertDriver;
     return that;
