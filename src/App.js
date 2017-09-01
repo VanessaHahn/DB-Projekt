@@ -178,10 +178,7 @@ App = (function () {
                 callback(xmlHttp.responseText);
         }
         xmlHttp.open("GET", theUrl, true); // true for asynchronous
-        xmlHttp.send(null); >>>
-        >>>
-        >
-        origin / master
+        xmlHttp.send(null);
     }
 
     function insertDriver() {
