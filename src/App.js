@@ -40,16 +40,30 @@ App = (function () {
         }
     }
 
-    function checkBox() {
-        var checkbox = document.querySelector("input[name=Status]");
-
-        checkbox.addEventListener('change', function () {
-            if (this.checked) {
-                var request = new XMLHttpRequest();
-                request.open("PUT", "http://localhost:8000/assignments/_id?id=" + currentAssignment._id + "&state=" + 2, true);
-                request.send(null);
+    function terminated() {
+        var currentAssignment;
+        var currentID = document.querySelector("#Auftragsnummer").innerHTML;
+        for (let i = 0; i < assignments.length; i++) {
+            if (currentID == assignments[i]._id) {
+                currentAssignment = assignments[i];
             }
-        });
+        }
+        updateState(currentAssignment);
+    }
+
+    function updateState(currentAssignment) {
+        var request = new XMLHttpRequest();
+        request.open("PUT", "http://localhost:8000/assignments/_id?id=" + currentAssignment._id + "&state=" + (currentAssignment.state + 1), true);
+        request.send(null);
+        if (currentAssignment.state === 2) {
+            var driver;
+            for (let i = 0; i < drivers.length; i++) {
+                if (drivers[i].assignmentID === currentAssignment._id) {
+                    driver = drivers[i];
+                }
+            }
+            viewAssignment(driver);
+        }
     }
 
     function filterDriver(driverID) {
@@ -97,11 +111,12 @@ App = (function () {
                 assignment = assignments[i];
             }
         }
-        if (assignment == null) {
-            assignment = selectNextAssignment();
+        if (assignment === null) {
+            assignment = selectNextAssignment(driver);
             updateAssignmentID(driver, assignment._id);
-            updateState();
+            updateState(assignment);
         }
+        console.log(assignment);
         var startAdress,
             targetAdress;
         for (let i = 0; i < adresses.length; i++) {
@@ -137,10 +152,6 @@ App = (function () {
             }
         }
         xhr.send(json);
-    }
-
-    function updateState() {
-
     }
 
     function getDrivers() {
@@ -188,8 +199,8 @@ App = (function () {
         data._id = assignments.length + 1;
         data.date = Date.now();
         data.state = 0;
-        data.startAdressID = 0;
-        data.endAdressID = 0;
+        data.startAdressID = 1;
+        data.endAdressID = 1;
         var json = JSON.stringify(data);
         console.log(json);
         var xhr = new XMLHttpRequest();
@@ -234,7 +245,7 @@ App = (function () {
         xhr.send(json);
     }
 
-    function updateDrivers() {
+    function updateDriver() {
         var url = "http://localhost:8000/drivers";
         var persNr = document.querySelector(".inputNumber").value;
         var vorname = document.querySelector(".inputFirstName").value;
@@ -242,36 +253,22 @@ App = (function () {
         var driverName = vorname + " " + nachname;
         var checkID = filterDriver(persNr);
         if (checkID != null) {
-            var data = {};
-            data.name = driverName;
-            var json = JSON.stringify(data);
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("PUT", url + '/' + persNr, true);
-            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-            xhr.onload = function () {
-                var users = JSON.parse(xhr.responseText);
-                if (xhr.readyState == 4 && xhr.status == "200") {
-                    console.table(users);
-                } else {
-                    console.error(users);
-                }
-            }
-            xhr.send(json);
+            var request = new XMLHttpRequest();
+            request.open("PUT", "http://localhost:8000/drivers/_id?id=" + persNr + "&name=" + driverName, true);
+            request.send(null);
         }
     }
 
-    function selectNextAssignment() {
+    function selectNextAssignment(driver) {
         var minDistance = 1000000;
         var minAssignment;
 
         for (let i = 0; i < assignments.length; i++) {
-            for (let j = 0; j < drivers.length; j++) {
-                var distance = getDistance(drivers[j].adressID, assignments[i].startAdressID);
-                if (distance < minDistance && assignments[i].state === 0) {
-                    minDistance = distance;
-                    minAssignment = assignments[i];
-                }
+            console.log(assignments[i]);
+            var distance = getDistance(driver.adressID, assignments[i].startAdressID);
+            if (distance < minDistance && assignments[i].state === 0) {
+                minDistance = distance;
+                minAssignment = assignments[i];
             }
         }
         return minAssignment;
@@ -295,8 +292,8 @@ App = (function () {
     that.initLayout = initLayout;
     that.viewLogin = viewLogin;
     that.login = login;
-    that.updateState = updateState;
-    that.updateDrivers = updateDrivers;
+    that.terminated = terminated;
+    that.updateDriver = updateDriver;
     that.insertDriver = insertDriver;
     that.insertAssignment = insertAssignment;
     return that;

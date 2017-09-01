@@ -36,7 +36,7 @@
         <h3>Daten ändern:</h3>
         <input class="inputLastName" type="text" placeholder="Nachname">
         <input class="inputFirstName" type="text" placeholder="Vorname">
-        <button type="button" onclick="App.updateDrivers()">Fahrer ändern</button>
+        <button type="button" onclick="App.updateDriver()">Fahrer ändern</button>
     </div>
     <div class="fahrer centered hidden">
         <h1>Fahrer</h1>
@@ -56,7 +56,7 @@
                 <td id="Startadresse"></td>
                 <td id="Zieladresse"></td>
                 <td id="Status"></td>
-                <td><input id="checkbox" type="checkbox" onClick="App.updateState()" name="Status"></td>
+                <td><input id="checkbox" type="checkbox" onClick="App.terminated()" name="Status"></td>
             </tr>
         </table>
     </div>
