@@ -181,19 +181,47 @@ App = (function () {
         xmlHttp.send(null);
     }
 
+    function insertAssignment() {
+        var url = "http://localhost:8000/assignments";
+
+        var data = {};
+        data._id = assignments.length + 1;
+        data.date = Date.now();
+        data.state = 0;
+        data.startAdressID = 0;
+        data.endAdressID = 0;
+        var json = JSON.stringify(data);
+        console.log(json);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url + '/add', true);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.onload = function () {
+            var users = JSON.parse(xhr.responseText);
+            if (xhr.readyState == 4 && xhr.status == "201") {
+                console.table(users);
+            } else {
+                console.error(users);
+            }
+        }
+        xhr.send(json);
+    }
+
     function insertDriver() {
         var vorname = document.querySelector(".inputFirstName").value;
         var nachname = document.querySelector(".inputLastName").value;
-        //var standort = document.querySelector(".inputName").value;
+        //var standort = document.querySelector(".inputNumber").value;
         var driverName = vorname + " " + nachname;
         var url = "http://localhost:8000/drivers";
 
         var data = {};
+        data._id = drivers.length + 1;
         data.name = driverName;
+        data.passwort = vorname.lowercase + "-" + nachname.lowercase;
+        data.adressID = 1;
+        data.assignmentID = 0;
         var json = JSON.stringify(data);
-
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", url, true);
+        xhr.open("POST", url + '/add', true);
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         xhr.onload = function () {
             var users = JSON.parse(xhr.responseText);
@@ -270,5 +298,6 @@ App = (function () {
     that.updateState = updateState;
     that.updateDrivers = updateDrivers;
     that.insertDriver = insertDriver;
+    that.insertAssignment = insertAssignment;
     return that;
 }());
