@@ -42,9 +42,11 @@ App = (function () {
 
     function terminated() {
         var currentAssignment;
+        console.log("checkbox");
         var currentID = document.querySelector("#Auftragsnummer").innerHTML;
+        console.log(currentID);
         for (let i = 0; i < assignments.length; i++) {
-            if (currentID == assignments[i]._id) {
+            if (parseInt(currentID) === assignments[i]._id) {
                 currentAssignment = assignments[i];
             }
         }
@@ -127,7 +129,6 @@ App = (function () {
                 targetAdress = adresses[i];
             }
         }
-        document.querySelector("#Auftragsnummer").innerHTML = assignment._id;
         document.querySelector("#Datum").innerHTML = assignment.date;
         document.querySelector("#Startadresse").innerHTML = startAdress.avenue + ". Avenue" + "/" + startAdress.street + ". Street";
         document.querySelector("#Zieladresse").innerHTML = targetAdress.avenue + ". Avenue" + "/" + targetAdress.street + ". Street";
@@ -248,13 +249,13 @@ App = (function () {
     function updateDriver() {
         var url = "http://localhost:8000/drivers";
         var persNr = document.querySelector(".inputNumber").value;
-        var vorname = document.querySelector(".inputFirstName").value;
-        var nachname = document.querySelector(".inputLastName").value;
+        var vorname = document.getElementById("updateInputFirstName").value;
+        var nachname = document.getElementById("updateInputLastName").value;
         var driverName = vorname + " " + nachname;
-        var checkID = filterDriver(persNr);
+        var checkID = filterDriver(parseInt(persNr));
         if (checkID != null) {
             var request = new XMLHttpRequest();
-            request.open("PUT", "http://localhost:8000/drivers/_id?id=" + persNr + "&name=" + driverName, true);
+            request.open("PUT", "http://localhost:8000/drivers/_id?_id=" + persNr + "&name=" + driverName, true);
             request.send(null);
         }
     }
@@ -264,7 +265,6 @@ App = (function () {
         var minAssignment;
 
         for (let i = 0; i < assignments.length; i++) {
-            console.log(assignments[i]);
             var distance = getDistance(driver.adressID, assignments[i].startAdressID);
             if (distance < minDistance && assignments[i].state === 0) {
                 minDistance = distance;
