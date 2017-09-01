@@ -107,6 +107,19 @@ app.put("/assignments/_id", function (req, res, next) {
   });
 });
 
+app.put("/drivers/_id", function (req,res, next) {
+  console.log("Connected: " + db.isConnected());
+  let driverID = req.query._id;
+  let updatedDriverName = req.body;
+  console.log(updatedDriverName);
+  db.updateDriver(driverID,updatedDriverName).then(function (drivers) {
+    res.json(drivers);
+  }).catch(function (err) {
+    console.log("There was an error!");
+    res.sendStatus(500);
+  });
+});
+
 //Send a Json (as body) to add a new driver
 app.post("/drivers/add", function (req, res, next) {
   console.log("Connected: " + db.isConnected());
@@ -116,7 +129,7 @@ app.post("/drivers/add", function (req, res, next) {
   }).catch(function (err) {
     console.log("There was an error!");
     res.sendStatus(500);
-  })
+  });
 });
 
 app.post("/managers/add", function (req, res, next) {
@@ -127,7 +140,7 @@ app.post("/managers/add", function (req, res, next) {
   }).catch(function (err) {
     console.log("There was an error!");
     res.sendStatus(500);
-  })
+  });
 });
 
 app.post("/adresses/add", function (req, res, next) {
@@ -138,7 +151,7 @@ app.post("/adresses/add", function (req, res, next) {
   }).catch(function (err) {
     console.log("There was an error!");
     res.sendStatus(500);
-  })
+  });
 });
 
 app.post("/assignments/add", function (req, res, next) {
