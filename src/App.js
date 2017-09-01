@@ -42,20 +42,22 @@ App = (function () {
 
     function terminated() {
         var currentAssignment;
-        console.log("checkbox");
         var currentID = document.querySelector("#Auftragsnummer").innerHTML;
-        console.log(currentID);
         for (let i = 0; i < assignments.length; i++) {
+            console.log(parseInt(currentID) === assignments[i]._id);
             if (parseInt(currentID) === assignments[i]._id) {
                 currentAssignment = assignments[i];
             }
         }
-        updateState(currentAssignment);
+        console.log(currentAssignment._id);
+        if(currentAssignment !== null) {
+          updateState(currentAssignment);
+        }
     }
 
     function updateState(currentAssignment) {
         var request = new XMLHttpRequest();
-        request.open("PUT", "http://localhost:8000/assignments/_id?id=" + currentAssignment._id + "&state=" + (currentAssignment.state + 1), true);
+        request.open("PUT", "http://localhost:8000/assignments/_id?_id=" + currentAssignment._id + "&state=" + (currentAssignment.state + 1), true);
         request.send(null);
         if (currentAssignment.state === 2) {
             var driver;
@@ -129,6 +131,7 @@ App = (function () {
                 targetAdress = adresses[i];
             }
         }
+        document.querySelector("#Auftragsnummer").innerHTML = assignment._id;
         document.querySelector("#Datum").innerHTML = assignment.date;
         document.querySelector("#Startadresse").innerHTML = startAdress.avenue + ". Avenue" + "/" + startAdress.street + ". Street";
         document.querySelector("#Zieladresse").innerHTML = targetAdress.avenue + ". Avenue" + "/" + targetAdress.street + ". Street";
