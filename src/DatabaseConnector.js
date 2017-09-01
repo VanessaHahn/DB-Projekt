@@ -169,7 +169,7 @@ module.exports = (function () {
         addAssignment({
             "_id": 5,
             "date": "2017-08-23T13:47:00",
-            "state": 2,
+            "state": 0,
             "startAdressID": 2,
             "endAdressID": 4,
         });
