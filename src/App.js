@@ -228,10 +228,12 @@ App = (function () {
         var driverName = vorname + " " + nachname;
         var url = "http://localhost:8000/drivers";
 
+        console.log(vorname.toLowerCase());
+        console.log(nachname);
         var data = {};
         data._id = drivers.length + 1;
         data.name = driverName;
-        data.passwort = vorname.lowercase + "-" + nachname.lowercase;
+        data.passwort = vorname.toLowerCase() + "-" + nachname.toLowerCase();
         data.adressID = 1;
         data.assignmentID = 0;
         var json = JSON.stringify(data);
@@ -278,6 +280,9 @@ App = (function () {
     }
 
     function getDistance(start, target) {
+        if (start === 0 || target === 0) {
+            return 1000000;
+        }
         var startAdress,
             targetAdress;
         for (let i = 0; i < adresses.length; i++) {
