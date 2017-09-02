@@ -32,14 +32,10 @@ caption {
     margin-bottom: 20px;
 }
 
-.inputStreet {
+#adress {
     width: 40px;
 }
 
-.inputAvenue {
-    width: 40px;
-}
-
-.standort{
+.standort {
     margin-top: 20px;
 }
