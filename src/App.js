@@ -50,7 +50,8 @@ App = (function () {
         console.log(currentAssignment._id);
         if (currentAssignment != null) {
             updateState(currentAssignment, 2);
-            document.querySelector("#checkbox").checked = false;
+            document.querySelector("#Status").innerHTML = 2;
+            document.getElementById("checkbox").checked = false;
             for (let i = 0; i < drivers; i++) {
                 if (drivers[i].assignmentID == currentAssignment._id) {
                     driver = drivers[i];
@@ -139,7 +140,7 @@ App = (function () {
         document.querySelector("#Datum").innerHTML = assignment.date;
         document.querySelector("#Startadresse").innerHTML = startAdress.avenue + ". Avenue" + "/" + startAdress.street + ". Street";
         document.querySelector("#Zieladresse").innerHTML = targetAdress.avenue + ". Avenue" + "/" + targetAdress.street + ". Street";
-        document.querySelector("#Status").innerHTML = assignment.state;
+        document.querySelector("#Status").innerHTML = 1;
     }
 
     function updateAssignmentID(driver, assignmentID) {
