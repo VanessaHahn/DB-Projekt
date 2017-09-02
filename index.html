@@ -17,27 +17,28 @@
     <div class="login centered hidden">
         <h1>Login</h1>
         <div><input class="inputName" type="text" placeholder="Personalnummer">
-        <input class="inputKey" type="password" placeholder="Passwort"></div>
+            <input class="inputKey" type="password" placeholder="Passwort"></div>
         <button type="button" onClick="App.login()">Senden</button>
     </div>
     <div class="manager centered hidden">
         <h1>Manager</h1>
         <h2>1. Neuen Auftrag anlegen:</h2>
-        <div><p>Abholadresse:</p>
-        <label>
-        <input class="inputAvenue" type="text">. Avenue/
-        <input class="inputStreet" type="text">. Street</label>
-        <p>Zieladresse:</p>
-        <label>
-        <input class="inputAvenue" type="text">. Avenue/
-        <input class="inputStreet" type="text">. Street</label></div>
+        <div>
+            <p>Abholadresse:</p>
+            <label>
+        <input class="inputAdressAss1" type="text">. Avenue/
+        <input class="inputAdressAss1" type="text">. Street</label>
+            <p>Zieladresse:</p>
+            <label>
+        <input class="inputAdressAss2" type="text">. Avenue/
+        <input class="inputAdressAss2" type="text">. Street</label></div>
         <button type="button" onclick="App.insertAssignment()">Auftrag speichern</button>
         <h2>2. Fahrer eintragen:</h2>
         <input class="inputLastName" type="text" placeholder="Nachname">
         <input class="inputFirstName" type="text" placeholder="Vorname">
         <div class="standort"><label>Standort (optional):
-        <input class="inputAvenue" type="text">. Avenue/
-        <input class="inputStreet" type="text">. Street</label></div>
+        <input class="inputAdressDri" type="text">. Avenue/
+        <input class="inputAdressDri" type="text">. Street</label></div>
         <button type="button" onclick="App.insertDriver()">Fahrer speichern</button>
         <h2>3. Fahrer ändern:</h2>
         <input class="inputNumber" type="text" placeholder="Personalnummer">
@@ -56,7 +57,7 @@
                 <th>Startadresse</th>
                 <th>Zieladresse</th>
                 <th>Status</th>
-                <th></th>
+                <th>Beliefert</th>
             </tr>
             <tr>
                 <td id="Auftragsnummer"></td>

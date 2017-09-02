@@ -11,7 +11,7 @@ module.exports = (function () {
         connected = false;
 
     function init() {
-        url = "mongodb://" + "localhost" + ":" + "32769" + "/" + "dbProject"; //URL auf der Mongo läuft (Port austauschen)
+        url = "mongodb://" + "localhost" + ":" + "27017" + "/" + "dbProject"; //URL auf der Mongo läuft (Port austauschen)
 
         // Schemata werden in etwa wie ein Schema bei einer relationalen Datenbank verwendet
         var driverSchema = mongoose.Schema({
@@ -41,11 +41,11 @@ module.exports = (function () {
                 required: true,
             },
             avenue: {
-                type: String,
+                type: Number,
                 required: true,
             },
             street: {
-                type: String,
+                type: Number,
                 required: true,
             },
         });

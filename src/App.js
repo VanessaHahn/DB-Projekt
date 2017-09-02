@@ -1,4 +1,3 @@
-var $ = $ || {};
 var App = App || {};
 App = (function () {
     "use strict";
@@ -44,22 +43,28 @@ App = (function () {
         var currentAssignment;
         var currentID = document.querySelector("#Auftragsnummer").innerHTML;
         for (let i = 0; i < assignments.length; i++) {
-            console.log(parseInt(currentID) === assignments[i]._id);
             if (parseInt(currentID) === assignments[i]._id) {
                 currentAssignment = assignments[i];
             }
         }
         console.log(currentAssignment._id);
-        if(currentAssignment !== null) {
-          updateState(currentAssignment);
+        if (currentAssignment != null) {
+            updateState(currentAssignment, 2);
+            document.querySelector("#checkbox").checked = false;
+            for (let i = 0; i < drivers; i++) {
+                if (drivers[i].assignmentID == currentAssignment._id) {
+                    driver = drivers[i];
+                }
+            }
+            viewAssignment(driver);
         }
     }
 
-    function updateState(currentAssignment) {
+    function updateState(currentAssignment, newState) {
         var request = new XMLHttpRequest();
-        request.open("PUT", "http://localhost:8000/assignments/_id?_id=" + currentAssignment._id + "&state=" + (currentAssignment.state + 1), true);
+        request.open("PUT", "http://localhost:8000/assignments/_id?_id=" + currentAssignment._id + "&state=" + newState, true);
         request.send(null);
-        if (currentAssignment.state === 2) {
+        if (newState === 2) {
             var driver;
             for (let i = 0; i < drivers.length; i++) {
                 if (drivers[i].assignmentID === currentAssignment._id) {
@@ -111,16 +116,15 @@ App = (function () {
     function viewAssignment(driver) {
         var assignment = null;
         for (let i = 0; i < assignments.length; i++) {
-            if (driver.assignmentID === assignments[i]._id) {
+            if (driver.assignmentID === assignments[i]._id && assignments[i].state == 1) {
                 assignment = assignments[i];
             }
         }
         if (assignment === null) {
             assignment = selectNextAssignment(driver);
             updateAssignmentID(driver, assignment._id);
-            updateState(assignment);
+            updateState(assignment, 1);
         }
-        console.log(assignment);
         var startAdress,
             targetAdress;
         for (let i = 0; i < adresses.length; i++) {
@@ -140,22 +144,11 @@ App = (function () {
 
     function updateAssignmentID(driver, assignmentID) {
         var url = "http://localhost:8000/drivers";
-        var json = JSON.stringify({
-            assignmentID: assignmentID
-        });
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("PUT", url + '/_id?_id=' + driver._id, true);
-        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        xhr.onload = function () {
-            var users = JSON.parse(xhr.responseText);
-            if (xhr.readyState == 4 && xhr.status == "200") {
-                console.table(users);
-            } else {
-                console.error(users);
-            }
-        }
-        xhr.send(json);
+        console.log(driver);
+        console.log(assignmentID);
+        var request = new XMLHttpRequest();
+        request.open("PUT", url + "/_id?_id=" + driver._id + "&assignmentID=" + assignmentID, true);
+        request.send(null);
     }
 
     function getDrivers() {
@@ -198,13 +191,53 @@ App = (function () {
 
     function insertAssignment() {
         var url = "http://localhost:8000/assignments";
-
         var data = {};
         data._id = assignments.length + 1;
         data.date = Date.now();
         data.state = 0;
-        data.startAdressID = 1;
-        data.endAdressID = 1;
+        data.startAdressID = getAdressID(document.querySelectorAll(".inputAdressAss1"));
+        data.endAdressID = getAdressID(document.querySelectorAll(".inputAdressAss2"));
+        var json = JSON.stringify(data);
+        console.log(json);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url + '/add', true);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.onload = function () {
+            var users = JSON.parse(xhr.responseText);
+            if (xhr.readyState == 4 && xhr.status == "201") {
+                console.table(users);
+            } else {
+                console.error(users);
+            }
+        }
+        xhr.send(json);
+    }
+
+    function getAdressID(adresse) {
+        var adressID = 0;
+        var avenue = parseInt(adresse[0].value);
+        var street = parseInt(adresse[1].value);
+        for (let i = 0; i < adresses.length; i++) {
+            if (adresses[i].avenue == avenue) {
+                if (adresses[i].street == street) {
+                    adressID = adresses[i]._id;
+                }
+            }
+        }
+        if (adressID == 0) {
+            insertAdress(avenue, street);
+            adressID = adresses.length;
+        }
+        return adressID;
+    }
+
+    function insertAdress(avenue, street) {
+        var url = "http://localhost:8000/adresses";
+
+        var data = {};
+        data._id = adresses.length + 1;
+        data.avenue = parseInt(avenue);
+        data.street = parseInt(street);
         var json = JSON.stringify(data);
         console.log(json);
         var xhr = new XMLHttpRequest();
@@ -224,17 +257,15 @@ App = (function () {
     function insertDriver() {
         var vorname = document.querySelector(".inputFirstName").value;
         var nachname = document.querySelector(".inputLastName").value;
-        //var standort = document.querySelector(".inputNumber").value;
         var driverName = vorname + " " + nachname;
+        var adressID = checkInput(document.querySelectorAll(".inputAdressDri"));
         var url = "http://localhost:8000/drivers";
 
-        console.log(vorname.toLowerCase());
-        console.log(nachname);
         var data = {};
         data._id = drivers.length + 1;
         data.name = driverName;
         data.passwort = vorname.toLowerCase() + "-" + nachname.toLowerCase();
-        data.adressID = 1;
+        data.adressID = adressID;
         data.assignmentID = 0;
         var json = JSON.stringify(data);
         var xhr = new XMLHttpRequest();
@@ -251,12 +282,21 @@ App = (function () {
         xhr.send(json);
     }
 
+    function checkInput(input) {
+        if (input[0].value != "" && input[1].value != "") {
+            return getAdressID(input);
+        } else {
+            return 1; //Firmenstandort;
+        }
+    }
+
     function updateDriver() {
         var url = "http://localhost:8000/drivers";
         var persNr = document.querySelector(".inputNumber").value;
         var vorname = document.getElementById("updateInputFirstName").value;
         var nachname = document.getElementById("updateInputLastName").value;
         var driverName = vorname + " " + nachname;
+        var passwort = vorname.toLowerCase() + "-" + nachname.toLowerCase();
         var checkID = filterDriver(parseInt(persNr));
         if (checkID != null) {
             var request = new XMLHttpRequest();
