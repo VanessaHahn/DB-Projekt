@@ -253,14 +253,12 @@ module.exports = (function () {
         });
     }
 
-    function updateDriver(driverID, driverName) {
+    function updateDriver(driverID, driverUpdate) {
         return new Promise(function (resolve, reject) {
-            drivers.findById(driverID, function (err, driverUpdate) {
+            drivers.findByIdAndUpdate(driverID, driverUpdate, function (err, driverUpdate) {
                 if (err) {
                     reject(err);
                 } else {
-                    driverUpdate.name = driverName;
-                    driverUpdate.save();
                     resolve(driverUpdate);
                 }
             });

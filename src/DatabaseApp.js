@@ -109,9 +109,8 @@ app.put("/assignments/_id", function (req, res, next) {
 
 app.put("/drivers/_id", function (req,res, next) {
   console.log("Connected: " + db.isConnected());
-  let driverID = req.query._id;
-  let updatedDriverName = req.query.name;
-  db.updateDriver(driverID,updatedDriverName).then(function (drivers) {
+  let driverUpdate = req.body;
+  db.updateDriver(driverUpdate._id,driverUpdate).then(function (drivers) {
     res.json(drivers);
   }).catch(function (err) {
     console.log("There was an error!");

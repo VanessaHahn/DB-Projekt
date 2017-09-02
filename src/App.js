@@ -308,6 +308,7 @@ App = (function () {
         var checkID = filterDriver(parseInt(persNr));
         if (checkID != null) {
             var request = new XMLHttpRequest();
+            //Diese Abfrage sollte jetzt über ein body objekt funktionieren
             request.open("PUT", "http://localhost:8000/drivers/_id?_id=" + persNr + "&name=" + driverName, true);
             request.send(null);
         }
