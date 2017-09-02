@@ -57,8 +57,15 @@ App = (function () {
                     driver = drivers[i];
                 }
             }
+            updateDriverAdress(driver, currentAssignment.endAdressID);
             viewAssignment(driver);
         }
+    }
+
+    function updateDriverAdress(driver, newAdressID) {
+        var request = new XMLHttpRequest();
+        request.open("PUT", "http://localhost:8000/drivers/_id?_id=" + driver._id + "&adressID=" + newAdressID, true);
+        request.send(null);
     }
 
     function updateState(currentAssignment, newState) {
