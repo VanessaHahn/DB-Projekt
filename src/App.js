@@ -41,13 +41,9 @@ App = (function () {
     }
 
     function terminated() {
-        var currentAssignment;
-        var currentID = document.querySelector("#Auftragsnummer").innerHTML;
-        for (let i = 0; i < assignments.length; i++) {
-            if (parseInt(currentID) === assignments[i]._id) {
-                currentAssignment = assignments[i];
-            }
-        }
+        var currentID = parseInt(document.querySelector("#Auftragsnummer").innerHTML);
+        var currentAssignment = filterAssignment(currentID);
+        console.log(currentAssignment);
         if (currentAssignment != null) {
             updateState(currentAssignment, 2);
             document.querySelector("#Status").innerHTML = 2;
@@ -108,19 +104,19 @@ App = (function () {
         return filteredDriver;
     }
 
-    function filterManager(driverID) {
-        let filteredDriver;
+    function filterManager(managerID) {
+        let filteredManager;
         for (let i = 0; i < managers.length; i++) {
-            if (managers[i]._id === driverID) {
-                filteredDriver = managers[i];
+            if (managers[i]._id === managerID) {
+                filteredManager = managers[i];
             }
         }
-        return filteredDriver;
+        return filteredManager;
     }
 
-    function filterAssignement(assignmentID) {
+    function filterAssignment(assignmentID) {
         let filteredAssign;
-        for (let i = 0; i < drivers.length; i++) {
+        for (let i = 0; i < assignments.length; i++) {
             if (assignments[i]._id === assignmentID) {
                 filteredAssign = assignments[i];
             }
@@ -338,12 +334,28 @@ App = (function () {
         var nachname = document.getElementById("updateInputLastName").value;
         var driverName = vorname + " " + nachname;
         var passwort = vorname.toLowerCase() + "-" + nachname.toLowerCase();
-        var checkID = filterDriver(parseInt(persNr));
-        if (checkID != null) {
+        var driver = filterDriver(parseInt(persNr));
+        if (driver != null) {
             var request = new XMLHttpRequest();
-            //Diese Abfrage sollte jetzt über ein body objekt funktionieren
-            request.open("PUT", "http://localhost:8000/drivers/_id?_id=" + persNr + "&name=" + driverName, true);
-            request.send(null);
+            var data = {};
+            data._id = persNr;
+            data.name = driverName;
+            data.passwort = passwort;
+            data.adressID = driver.adressID;
+            data.assignmentID = driver.assignmentID;
+            var json = JSON.stringify(data);
+            var xhr = new XMLHttpRequest();
+            xhr.open("PUT", url + "/_id?_id=" + persNr, true);
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.onload = function () {
+                var users = JSON.parse(xhr.responseText);
+                if (xhr.readyState == 4 && xhr.status == "201") {
+                    console.table(users);
+                } else {
+                    console.error(users);
+                }
+            }
+            xhr.send(json);
         }
     }
 
