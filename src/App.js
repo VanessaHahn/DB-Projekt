@@ -7,7 +7,8 @@ App = (function () {
         drivers,
         managers,
         adresses,
-        assignments;
+        assignments,
+        index;
 
     function initLayout() {
         getDrivers();
@@ -47,40 +48,54 @@ App = (function () {
                 currentAssignment = assignments[i];
             }
         }
-        console.log(currentAssignment._id);
         if (currentAssignment != null) {
             updateState(currentAssignment, 2);
             document.querySelector("#Status").innerHTML = 2;
-            document.getElementById("checkbox").checked = false;
-            for (let i = 0; i < drivers; i++) {
-                if (drivers[i].assignmentID == currentAssignment._id) {
-                    driver = drivers[i];
-                }
-            }
-            updateDriverAdress(driver, currentAssignment.endAdressID);
-            viewAssignment(driver);
+            setTimeout(showNextAssignment(currentAssignment), 1500);
         }
     }
 
+    function showNextAssignment(currentAssignment) {
+        var driver;
+        document.getElementById("checkbox").checked = false;
+        for (let i = 0; i < drivers.length; i++) {
+            console.log(drivers[i]);
+            if (drivers[i].assignmentID == currentAssignment._id) {
+                driver = drivers[i];
+            }
+        }
+        updateDriverAdress(driver, currentAssignment.endAdressID);
+        viewAssignment(driver);
+    }
+
     function updateDriverAdress(driver, newAdressID) {
-        var request = new XMLHttpRequest();
-        request.open("PUT", "http://localhost:8000/drivers/_id?_id=" + driver._id + "&adressID=" + newAdressID, true);
-        request.send(null);
+        var url = "http://localhost:8000/drivers";
+
+        var data = {};
+        data._id = driver._id;
+        data.name = driver.name;
+        data.passwort = driver.passwort;
+        data.adressID = newAdressID;
+        data.assignmentID = driver.assignmentID;
+        var json = JSON.stringify(data);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url + "/_id?_id=" + driver._id, true);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.onload = function () {
+            var users = JSON.parse(xhr.responseText);
+            if (xhr.readyState == 4 && xhr.status == "201") {
+                console.table(users);
+            } else {
+                console.error(users);
+            }
+        }
+        xhr.send(json);
     }
 
     function updateState(currentAssignment, newState) {
         var request = new XMLHttpRequest();
         request.open("PUT", "http://localhost:8000/assignments/_id?_id=" + currentAssignment._id + "&state=" + newState, true);
         request.send(null);
-        if (newState === 2) {
-            var driver;
-            for (let i = 0; i < drivers.length; i++) {
-                if (drivers[i].assignmentID === currentAssignment._id) {
-                    driver = drivers[i];
-                }
-            }
-            viewAssignment(driver);
-        }
     }
 
     function filterDriver(driverID) {
@@ -153,10 +168,26 @@ App = (function () {
     function updateAssignmentID(driver, assignmentID) {
         var url = "http://localhost:8000/drivers";
         console.log(driver);
-        console.log(assignmentID);
-        var request = new XMLHttpRequest();
-        request.open("PUT", url + "/_id?_id=" + driver._id + "&assignmentID=" + assignmentID, true);
-        request.send(null);
+        var data = {};
+        data._id = driver._id;
+        data.name = driver.name;
+        data.passwort = driver.passwort;
+        data.adressID = driver.adressID;
+        data.assignmentID = assignmentID;
+        var json = JSON.stringify(data);
+        console.log(json);
+        var xhr = new XMLHttpRequest();
+        xhr.open("PUT", url + "/_id?_id=" + driver._id, true);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.onload = function () {
+            var users = JSON.parse(xhr.responseText);
+            if (xhr.readyState == 4 && xhr.status == "201") {
+                console.table(users);
+            } else {
+                console.error(users);
+            }
+        }
+        xhr.send(json);
     }
 
     function getDrivers() {
@@ -198,6 +229,7 @@ App = (function () {
     }
 
     function insertAssignment() {
+        index = 0;
         var url = "http://localhost:8000/assignments";
         var data = {};
         data._id = assignments.length + 1;
@@ -234,16 +266,17 @@ App = (function () {
         }
         if (adressID == 0) {
             insertAdress(avenue, street);
-            adressID = adresses.length;
+            adressID = adresses.length + index;
         }
         return adressID;
     }
 
     function insertAdress(avenue, street) {
+        index++;
         var url = "http://localhost:8000/adresses";
 
         var data = {};
-        data._id = adresses.length + 1;
+        data._id = adresses.length + index;
         data.avenue = parseInt(avenue);
         data.street = parseInt(street);
         var json = JSON.stringify(data);
