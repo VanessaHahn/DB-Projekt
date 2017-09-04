@@ -1,8 +1,13 @@
 var mongoose = require("mongoose"),
+    autoIncrement = require("mongoose-auto-increment"),
     drivers,
+    driverSchema,
     adresses,
+    adressesSchema,
     managers,
-    assignments;
+    managerSchema,
+    assignments,
+    assignmentSchema;
 
 module.exports = (function () {
     var that = {},
@@ -11,14 +16,10 @@ module.exports = (function () {
         connected = false;
 
     function init() {
-        url = "mongodb://" + "localhost" + ":" + "27017" + "/" + "dbProject"; //URL auf der Mongo läuft (Port austauschen)
+        url = "mongodb://" + "localhost" + ":" + "32771" + "/" + "dbProject"; //URL auf der Mongo läuft (Port austauschen)
 
         // Schemata werden in etwa wie ein Schema bei einer relationalen Datenbank verwendet
-        var driverSchema = mongoose.Schema({
-            _id: {
-                type: Number,
-                required: true,
-            },
+        driverSchema = mongoose.Schema({
             name: {
                 type: String,
                 required: true,
@@ -35,11 +36,7 @@ module.exports = (function () {
             },
         });
 
-        var adressesSchema = mongoose.Schema({
-            _id: {
-                type: Number,
-                required: true,
-            },
+        adressesSchema = mongoose.Schema({
             avenue: {
                 type: Number,
                 required: true,
@@ -50,14 +47,9 @@ module.exports = (function () {
             },
         });
 
-        var managerSchema = mongoose.Schema({
-            _id: {
-                type: Number,
-                required: true,
-            },
+        managerSchema = mongoose.Schema({
             name: {
                 type: String,
-                required: true,
             },
             passwort: {
                 type: String,
@@ -65,14 +57,9 @@ module.exports = (function () {
             },
         });
 
-        var assignmentSchema = mongoose.Schema({
-            _id: {
-                type: Number,
-                required: true,
-            },
+        assignmentSchema = mongoose.Schema({
             date: {
                 type: Date,
-                required: true,
             },
             state: {
                 type: Number,
@@ -87,97 +74,94 @@ module.exports = (function () {
                 required: true,
             },
         });
+    }
 
-        drivers = mongoose.model("drivers", driverSchema);
-        addDriver({
-            "_id": 1,
-            "name": "John Smith",
-            "passwort": "john-smith",
-            "adressID": 2,
-            "assignmentID": 0,
-        });
-        addDriver({
-            "_id": 2,
-            "name": "Thomas Meier",
-            "passwort": "thomas-meier",
-            "adressID": 1,
-            "assignmentID": 1,
-        });
-        addDriver({
-            "_id": 3,
-            "name": "Johannes Bond",
-            "passwort": "johannes-bond",
-            "adressID": 4,
-            "assignmentID": 0,
-        });
-        adresses = mongoose.model("adresses", adressesSchema);
-        addAdress({
-            "_id": 1,
-            "avenue": 5,
-            "street": 31
-        });
-        addAdress({
-            "_id": 2,
-            "avenue": 2,
-            "street": 53,
-        });
-        addAdress({
-            "_id": 3,
-            "avenue": 3,
-            "street": 44
-        });
-        addAdress({
-            "_id": 4,
-            "avenue": 1,
-            "street": 9,
-        });
-        managers = mongoose.model("managers", managerSchema);
-        addManager({
-            "_id": 1,
-            "name": "Hans Mueller",
-            "passwort": "hans-mueller",
-        });
-        assignments = mongoose.model("assignments", assignmentSchema);
-        addAssignment({
-            "_id": 1,
-            "date": "2017-08-23T13:07:00",
-            "state": 0,
-            "startAdressID": 1,
-            "endAdressID": 2,
-        });
-        addAssignment({
-            "_id": 2,
-            "date": "2017-08-23T13:43:00",
-            "state": 0,
-            "startAdressID": 3,
-            "endAdressID": 2,
-        });
-        addAssignment({
-            "_id": 3,
-            "date": "2017-08-23T13:45:00",
-            "state": 0,
-            "startAdressID": 1,
-            "endAdressID": 3,
-        });
-        addAssignment({
-            "_id": 4,
-            "date": "2017-08-23T13:45:50",
-            "state": 0,
-            "startAdressID": 3,
-            "endAdressID": 1,
-        });
-        addAssignment({
-            "_id": 5,
-            "date": "2017-08-23T13:47:00",
-            "state": 0,
-            "startAdressID": 2,
-            "endAdressID": 4,
-        });
+    function addDefaultValuesIntoDatabase(connection) {
+      driverSchema.plugin(autoIncrement.plugin, "drivers");
+      adressesSchema.plugin(autoIncrement.plugin, "adresses");
+      managerSchema.plugin(autoIncrement.plugin, "managers");
+      assignmentSchema.plugin(autoIncrement.plugin, "assignments");
+
+      drivers = connection.model("drivers", driverSchema);
+      adresses = connection.model("adresses", adressesSchema);
+      managers = connection.model("managers", managerSchema);
+      assignments = connection.model("assignments", assignmentSchema);
+
+      addDriver({
+        "name": "John Smith",
+        "passwort": "john-smith",
+        "adressID": 2,
+        "assignmentID": 0,
+      });
+      addDriver({
+        "name": "Thomas Meier",
+        "passwort": "thomas-meier",
+        "adressID": 1,
+        "assignmentID": 1,
+      });
+      addDriver({
+        "name": "Johannes Bond",
+        "passwort": "johannes-bond",
+        "adressID": 4,
+        "assignmentID": 0,
+      });
+      addAdress({
+        "avenue": 5,
+        "street": 31
+      });
+      addAdress({
+        "avenue": 2,
+        "street": 53,
+      });
+      addAdress({
+        "avenue": 3,
+        "street": 44
+      });
+      addAdress({
+        "avenue": 1,
+        "street": 9,
+      });
+      addManager({
+        "name": "Hans Mueller",
+        "passwort": "hans-mueller",
+      });
+      addAssignment({
+        "date": "2017-08-23T13:07:00",
+        "state": 0,
+        "startAdressID": 1,
+        "endAdressID": 2,
+      });
+      addAssignment({
+        "date": "2017-08-23T13:43:00",
+        "state": 0,
+        "startAdressID": 3,
+        "endAdressID": 2,
+      });
+      addAssignment({
+
+        "date": "2017-08-23T13:45:00",
+        "state": 0,
+        "startAdressID": 1,
+        "endAdressID": 3,
+      });
+      addAssignment({
+        "date": "2017-08-23T13:45:50",
+        "state": 0,
+        "startAdressID": 3,
+        "endAdressID": 1,
+      });
+      addAssignment({
+        "date": "2017-08-23T13:47:00",
+        "state": 0,
+        "startAdressID": 2,
+        "endAdressID": 4,
+      });
     }
 
     function connect() {
         return new Promise(function (resolve, reject) {
-            mongoose.connect(url);
+            var connection = mongoose.connect(url);
+            autoIncrement.initialize(connection);
             db.on("error", function (err) {
                 reject();
             });
@@ -188,6 +172,7 @@ module.exports = (function () {
 
             db.once("open", function () {
                 connected = true;
+                addDefaultValuesIntoDatabase(connection);
                 resolve();
             });
         });

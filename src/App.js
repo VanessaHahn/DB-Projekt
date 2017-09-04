@@ -228,7 +228,6 @@ App = (function () {
         index = 0;
         var url = "http://localhost:8000/assignments";
         var data = {};
-        data._id = assignments.length + 1;
         data.date = Date.now();
         data.state = 0;
         data.startAdressID = getAdressID(document.querySelectorAll(".inputAdressAss1"));
@@ -268,11 +267,9 @@ App = (function () {
     }
 
     function insertAdress(avenue, street) {
-        index++;
         var url = "http://localhost:8000/adresses";
-
+        getAdresses();
         var data = {};
-        data._id = adresses.length + index;
         data.avenue = parseInt(avenue);
         data.street = parseInt(street);
         var json = JSON.stringify(data);
@@ -281,6 +278,8 @@ App = (function () {
         xhr.open("POST", url + '/add', true);
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         xhr.onload = function () {
+            console.log(xhr.responseText);
+            console.log(xhr);
             var users = JSON.parse(xhr.responseText);
             if (xhr.readyState == 4 && xhr.status == "201") {
                 console.table(users);
@@ -299,7 +298,6 @@ App = (function () {
         var url = "http://localhost:8000/drivers";
 
         var data = {};
-        data._id = drivers.length + 1;
         data.name = driverName;
         data.passwort = vorname.toLowerCase() + "-" + nachname.toLowerCase();
         data.adressID = adressID;

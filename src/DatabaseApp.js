@@ -144,6 +144,7 @@ app.post("/managers/add", function (req, res, next) {
 app.post("/adresses/add", function (req, res, next) {
   console.log("Connected: " + db.isConnected());
   var adress = req.body;
+  console.log(req.body);
   db.addAdress(adress).then(function (addresses) {
     res.json(addresses);
   }).catch(function (err) {
