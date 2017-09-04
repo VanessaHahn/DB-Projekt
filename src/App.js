@@ -55,13 +55,14 @@ App = (function () {
         var driver;
         document.getElementById("checkbox").checked = false;
         for (let i = 0; i < drivers.length; i++) {
-            console.log(drivers[i]);
             if (drivers[i].assignmentID == currentAssignment._id) {
                 driver = drivers[i];
             }
         }
         updateDriverAdress(driver, currentAssignment.endAdressID);
-        viewAssignment(driver);
+        var assignment = selectNextAssignment(driver);
+        viewAssignment(assignment);
+
     }
 
     function updateDriverAdress(driver, newAdressID) {
@@ -128,11 +129,11 @@ App = (function () {
         document.querySelector(".login").classList.add("hidden");
         document.querySelector("." + employee).classList.remove("hidden");
         if (employee === 'fahrer') {
-            viewAssignment(driver);
+            selectAssignment(driver);
         }
     }
 
-    function viewAssignment(driver) {
+    function selectAssignment(driver) {
         var assignment = null;
         for (let i = 0; i < assignments.length; i++) {
             if (driver.assignmentID === assignments[i]._id && assignments[i].state == 1) {
@@ -144,21 +145,29 @@ App = (function () {
             updateAssignmentID(driver, assignment._id);
             updateState(assignment, 1);
         }
-        var startAdress,
-            targetAdress;
-        for (let i = 0; i < adresses.length; i++) {
-            if (adresses[i]._id == assignment.startAdressID) {
-                startAdress = adresses[i];
+        viewAssignment(assignment);
+    }
+
+    function viewAssignment(assignment) {
+        if (assignment != null) {
+            var startAdress,
+                targetAdress;
+            for (let i = 0; i < adresses.length; i++) {
+                if (adresses[i]._id == assignment.startAdressID) {
+                    startAdress = adresses[i];
+                }
+                if (adresses[i]._id == assignment.endAdressID) {
+                    targetAdress = adresses[i];
+                }
             }
-            if (adresses[i]._id == assignment.endAdressID) {
-                targetAdress = adresses[i];
-            }
+            document.querySelector("#Auftragsnummer").innerHTML = assignment._id;
+            document.querySelector("#Datum").innerHTML = assignment.date;
+            document.querySelector("#Startadresse").innerHTML = startAdress.avenue + ". Avenue" + "/" + startAdress.street + ". Street";
+            document.querySelector("#Zieladresse").innerHTML = targetAdress.avenue + ". Avenue" + "/" + targetAdress.street + ". Street";
+            document.querySelector("#Status").innerHTML = 1;
+        } else {
+            console.log("Es sind bereits alle Aufträge bearbeitet!");
         }
-        document.querySelector("#Auftragsnummer").innerHTML = assignment._id;
-        document.querySelector("#Datum").innerHTML = assignment.date;
-        document.querySelector("#Startadresse").innerHTML = startAdress.avenue + ". Avenue" + "/" + startAdress.street + ". Street";
-        document.querySelector("#Zieladresse").innerHTML = targetAdress.avenue + ". Avenue" + "/" + targetAdress.street + ". Street";
-        document.querySelector("#Status").innerHTML = 1;
     }
 
     function updateAssignmentID(driver, assignmentID) {
