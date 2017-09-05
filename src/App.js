@@ -7,8 +7,7 @@ App = (function () {
         drivers,
         managers,
         adresses,
-        assignments,
-        index;
+        assignments;
 
     function initLayout() {
         getDrivers();
@@ -43,7 +42,6 @@ App = (function () {
     function terminated() {
         var currentID = parseInt(document.querySelector("#Auftragsnummer").innerHTML);
         var currentAssignment = filterAssignment(currentID);
-        console.log(currentAssignment);
         if (currentAssignment != null) {
             updateState(currentAssignment, 2);
             document.querySelector("#Status").innerHTML = 2;
@@ -80,12 +78,7 @@ App = (function () {
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         xhr.onload = function () {
             var users = JSON.parse(xhr.responseText);
-            if (xhr.readyState == 4 && xhr.status == "201") {
-                console.table(users);
-            } else {
-                console.error(users);
-            }
-        }
+        };
         xhr.send(json);
     }
 
@@ -172,7 +165,6 @@ App = (function () {
 
     function updateAssignmentID(driver, assignmentID) {
         var url = "http://localhost:8000/drivers";
-        console.log(driver);
         var data = {};
         data._id = driver._id;
         data.name = driver.name;
@@ -186,12 +178,7 @@ App = (function () {
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         xhr.onload = function () {
             var users = JSON.parse(xhr.responseText);
-            if (xhr.readyState == 4 && xhr.status == "201") {
-                console.table(users);
-            } else {
-                console.error(users);
-            }
-        }
+        };
         xhr.send(json);
     }
 
@@ -234,15 +221,15 @@ App = (function () {
     }
 
     function insertAssignment() {
-        index = 0;
         var url = "http://localhost:8000/assignments";
+        insertAdress(document.getElementById("input_adressAvenue").value, document.getElementById("input_adressStreet").value);
+        insertAdress(document.getElementById("input_adressAvenue2").value, document.getElementById("input_adressStreet2").value);
         var data = {};
         data.date = Date.now();
         data.state = 0;
         data.startAdressID = getAdressID(document.querySelectorAll(".inputAdressAss1"));
         data.endAdressID = getAdressID(document.querySelectorAll(".inputAdressAss2"));
         var json = JSON.stringify(data);
-        console.log(json);
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url + '/add', true);
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
@@ -253,7 +240,7 @@ App = (function () {
             } else {
                 console.error(users);
             }
-        }
+        };
         xhr.send(json);
     }
 
@@ -268,10 +255,6 @@ App = (function () {
                 }
             }
         }
-        if (adressID == 0) {
-            insertAdress(avenue, street);
-            adressID = adresses.length + index;
-        }
         return adressID;
     }
 
@@ -282,20 +265,12 @@ App = (function () {
         data.avenue = parseInt(avenue);
         data.street = parseInt(street);
         var json = JSON.stringify(data);
-        console.log(json);
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url + '/add', true);
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         xhr.onload = function () {
-            console.log(xhr.responseText);
-            console.log(xhr);
             var users = JSON.parse(xhr.responseText);
-            if (xhr.readyState == 4 && xhr.status == "201") {
-                console.table(users);
-            } else {
-                console.error(users);
-            }
-        }
+        };
         xhr.send(json);
     }
 
@@ -317,12 +292,7 @@ App = (function () {
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         xhr.onload = function () {
             var users = JSON.parse(xhr.responseText);
-            if (xhr.readyState == 4 && xhr.status == "201") {
-                console.table(users);
-            } else {
-                console.error(users);
-            }
-        }
+        };
         xhr.send(json);
     }
 
@@ -356,12 +326,7 @@ App = (function () {
             xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
             xhr.onload = function () {
                 var users = JSON.parse(xhr.responseText);
-                if (xhr.readyState == 4 && xhr.status == "201") {
-                    console.table(users);
-                } else {
-                    console.error(users);
-                }
-            }
+            };
             xhr.send(json);
         }
     }
