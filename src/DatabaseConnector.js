@@ -16,6 +16,7 @@ module.exports = (function () {
     connected = false;
 
   function init() {
+    url = "mongodb://" + "localhost" + ":" + "32773" + "/" + "dbProject"; //URL auf der Mongo läuft (Port austauschen)
 
     // Schemata werden in etwa wie ein Schema bei einer relationalen Datenbank verwendet
     driverSchema = mongoose.Schema({
@@ -93,6 +94,7 @@ module.exports = (function () {
         addDriver({
           "name": "John Smith",
           "passwort": "john-smith",
+          "adressID": 0,
           "assignmentID": 0,
         });
         addDriver({
@@ -104,6 +106,7 @@ module.exports = (function () {
         addDriver({
           "name": "Johannes Bond",
           "passwort": "johannes-bond",
+          "adressID": 3,
           "assignmentID": 0,
         });
         addAdress({
@@ -155,6 +158,7 @@ module.exports = (function () {
           "date": "2017-08-23T13:47:00",
           "state": 0,
           "startAdressID": 2,
+          "endAdressID": 3,
         });
       }
     });
