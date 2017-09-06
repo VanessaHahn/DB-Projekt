@@ -255,6 +255,7 @@ App = (function () {
         }
         if (adressID === -1) {
             adressID = insertAdress(avenue, street);
+            console.log(adressID);
         }
         return adressID;
     }
@@ -268,15 +269,14 @@ App = (function () {
         data.street = parseInt(street);
         var json = JSON.stringify(data);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", url + '/add', true);
+        xhr.open("POST", url + '/add', false);
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         xhr.onload = function () {
             var users = JSON.parse(xhr.responseText);
+            console.log(users._id);
             return users._id;
         };
-        xhr.send(json);
-        console.log(xhr.responseText);
-        return parseInt(xhr.onload);
+      xhr.send(json);
     }
 
     function insertDriver() {

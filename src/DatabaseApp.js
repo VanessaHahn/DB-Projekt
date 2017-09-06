@@ -160,7 +160,7 @@ app.post("/assignments/add", function (req, res, next) {
   }).catch(function (err) {
     console.log(err);
     res.sendStatus(500);
-  })
+  });
 });
 
 db.init();
