@@ -137,6 +137,7 @@ App = (function () {
             assignment = selectNextAssignment(driver);
             updateAssignmentID(driver, assignment._id);
             updateState(assignment, 1);
+            getAssignments();
         }
         viewAssignment(assignment);
     }
@@ -221,25 +222,30 @@ App = (function () {
     }
 
     function insertAssignment() {
-        var url = "http://localhost:8000/assignments";
-        var data = {};
-        data.date = Date.now();
-        data.state = 0;
-        data.startAdressID = getAdressID(document.querySelectorAll(".inputAdressAss1"));
-        data.endAdressID = getAdressID(document.querySelectorAll(".inputAdressAss2"));
-        var json = JSON.stringify(data);
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", url + '/add', true);
-        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        xhr.onload = function () {
-            var users = JSON.parse(xhr.responseText);
-            if (xhr.readyState == 4 && xhr.status == "201") {
-                console.table(users);
-            } else {
-                console.error(users);
-            }
-        };
-        xhr.send(json);
+        getAdressID(document.querySelectorAll(".inputAdressAss1"));
+        getAdressID(document.querySelectorAll(".inputAdressAss2"));
+        getAdresses();
+        setTimeout(function () {
+            var url = "http://localhost:8000/assignments";
+            var data = {};
+            data.date = Date.now();
+            data.state = 0;
+            data.startAdressID = getAdressID(document.querySelectorAll(".inputAdressAss1"));
+            data.endAdressID = getAdressID(document.querySelectorAll(".inputAdressAss2"));
+            var json = JSON.stringify(data);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url + '/add', true);
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.onload = function () {
+                var users = JSON.parse(xhr.responseText);
+                if (xhr.readyState == 4 && xhr.status == "201") {
+                    console.table(users);
+                } else {
+                    console.error(users);
+                }
+            };
+            xhr.send(json);
+        }, 100);
     }
 
     function getAdressID(adresse) {
@@ -254,16 +260,13 @@ App = (function () {
             }
         }
         if (adressID === -1) {
-            adressID = insertAdress(avenue, street);
-            console.log(adressID);
+            insertAdress(avenue, street);
         }
         return adressID;
     }
 
     function insertAdress(avenue, street) {
-        var adressID = -1;
         var url = "http://localhost:8000/adresses";
-        getAdresses();
         var data = {};
         data.avenue = parseInt(avenue);
         data.street = parseInt(street);
@@ -274,9 +277,8 @@ App = (function () {
         xhr.onload = function () {
             var users = JSON.parse(xhr.responseText);
             console.log(users._id);
-            return users._id;
         };
-      xhr.send(json);
+        xhr.send(json);
     }
 
     function insertDriver() {
