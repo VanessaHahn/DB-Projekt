@@ -45,6 +45,8 @@ App = (function () {
         if (currentAssignment != null) {
             updateState(currentAssignment, 2);
             document.querySelector("#Status").innerHTML = 2;
+            getDrivers();
+            getAssignments();
             setTimeout(showNextAssignment(currentAssignment), 1500);
         }
     }
@@ -58,9 +60,8 @@ App = (function () {
             }
         }
         updateDriverAdress(driver, currentAssignment.endAdressID);
-        var assignment = selectNextAssignment(driver);
+        var assignment = selectNextAssignment(driver, endAdressID);
         viewAssignment(assignment);
-
     }
 
     function updateDriverAdress(driver, newAdressID) {
@@ -80,6 +81,7 @@ App = (function () {
             var users = JSON.parse(xhr.responseText);
         };
         xhr.send(json);
+        getDrivers();
     }
 
     function updateState(currentAssignment, newState) {
@@ -134,7 +136,7 @@ App = (function () {
             }
         }
         if (assignment === null) {
-            assignment = selectNextAssignment(driver);
+            assignment = selectNextAssignment(driver, driver.adressID);
             updateAssignmentID(driver, assignment._id);
             updateState(assignment, 1);
             getAssignments();
@@ -292,7 +294,7 @@ App = (function () {
         data.name = driverName;
         data.passwort = vorname.toLowerCase() + "-" + nachname.toLowerCase();
         data.adressID = adressID;
-        data.assignmentID = 0;
+        data.assignmentID = -1;
         var json = JSON.stringify(data);
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url + '/add', true);
@@ -301,6 +303,7 @@ App = (function () {
             var users = JSON.parse(xhr.responseText);
         };
         xhr.send(json);
+        getDrivers();
     }
 
     function checkInput(input) {
@@ -338,12 +341,12 @@ App = (function () {
         }
     }
 
-    function selectNextAssignment(driver) {
+    function selectNextAssignment(driver, driverAdress) {
         var minDistance = 1000000;
         var minAssignment;
 
         for (let i = 0; i < assignments.length; i++) {
-            var distance = getDistance(driver.adressID, assignments[i].startAdressID);
+            var distance = getDistance(driverAdress, assignments[i].startAdressID);
             if (distance < minDistance && assignments[i].state === 0) {
                 minDistance = distance;
                 minAssignment = assignments[i];

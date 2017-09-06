@@ -95,19 +95,19 @@ module.exports = (function () {
                     "name": "John Smith",
                     "passwort": "john-smith",
                     "adressID": 0,
-                    "assignmentID": 0,
+                    "assignmentID": -1,
                 });
                 addDriver({
                     "name": "Thomas Meier",
                     "passwort": "thomas-meier",
                     "adressID": 1,
-                    "assignmentID": 1,
+                    "assignmentID": 2,
                 });
                 addDriver({
                     "name": "Johannes Bond",
                     "passwort": "johannes-bond",
                     "adressID": 3,
-                    "assignmentID": 0,
+                    "assignmentID": -1,
                 });
                 addAdress({
                     "avenue": 5,
