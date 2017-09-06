@@ -222,8 +222,6 @@ App = (function () {
 
     function insertAssignment() {
         var url = "http://localhost:8000/assignments";
-        insertAdress(document.getElementById("input_adressAvenue").value, document.getElementById("input_adressStreet").value);
-        insertAdress(document.getElementById("input_adressAvenue2").value, document.getElementById("input_adressStreet2").value);
         var data = {};
         data.date = Date.now();
         data.state = 0;
@@ -245,7 +243,7 @@ App = (function () {
     }
 
     function getAdressID(adresse) {
-        var adressID = 0;
+        var adressID = -1;
         var avenue = parseInt(adresse[0].value);
         var street = parseInt(adresse[1].value);
         for (let i = 0; i < adresses.length; i++) {
@@ -255,10 +253,14 @@ App = (function () {
                 }
             }
         }
+        if (adressID === -1) {
+            adressID = insertAdress(avenue, street);
+        }
         return adressID;
     }
 
     function insertAdress(avenue, street) {
+        var adressID = -1;
         var url = "http://localhost:8000/adresses";
         getAdresses();
         var data = {};
@@ -270,8 +272,11 @@ App = (function () {
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         xhr.onload = function () {
             var users = JSON.parse(xhr.responseText);
+            return users._id;
         };
         xhr.send(json);
+        console.log(xhr.responseText);
+        return parseInt(xhr.onload);
     }
 
     function insertDriver() {
@@ -346,9 +351,6 @@ App = (function () {
     }
 
     function getDistance(start, target) {
-        if (start === 0 || target === 0) {
-            return 1000000;
-        }
         var startAdress,
             targetAdress;
         for (let i = 0; i < adresses.length; i++) {
