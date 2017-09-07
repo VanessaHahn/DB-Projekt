@@ -60,7 +60,7 @@ App = (function () {
             }
         }
         updateDriverAdress(driver, currentAssignment.endAdressID);
-        var assignment = selectNextAssignment(driver, endAdressID);
+        var assignment = selectNextAssignment(driver, currentAssignment.endAdressID);
         viewAssignment(assignment);
     }
 
