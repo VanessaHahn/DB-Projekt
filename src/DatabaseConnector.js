@@ -101,7 +101,7 @@ module.exports = (function () {
                     "name": "Thomas Meier",
                     "passwort": "thomas-meier",
                     "adressID": 1,
-                    "assignmentID": 2,
+                    "assignmentID": -1,
                 });
                 addDriver({
                     "name": "Johannes Bond",
