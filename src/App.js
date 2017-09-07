@@ -175,7 +175,6 @@ App = (function () {
         data.adressID = driver.adressID;
         data.assignmentID = assignmentID;
         var json = JSON.stringify(data);
-        console.log(json);
         var xhr = new XMLHttpRequest();
         xhr.open("PUT", url + "/_id?_id=" + driver._id, true);
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
@@ -240,11 +239,6 @@ App = (function () {
             xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
             xhr.onload = function () {
                 var users = JSON.parse(xhr.responseText);
-                if (xhr.readyState == 4 && xhr.status == "201") {
-                    console.table(users);
-                } else {
-                    console.error(users);
-                }
             };
             xhr.send(json);
         }, 100);
@@ -278,7 +272,6 @@ App = (function () {
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         xhr.onload = function () {
             var users = JSON.parse(xhr.responseText);
-            console.log(users._id);
         };
         xhr.send(json);
     }
